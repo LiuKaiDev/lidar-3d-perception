@@ -4,9 +4,13 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 0 — Environment and repository initialization**
+**Phase 1 — KITTI data and 3D geometry (implementation complete; dataset validation pending)**
 
-This starter repository intentionally contains **no perception business logic**. The first development task is to validate and freeze the WSL2 / Ubuntu / NVIDIA / PyTorch / spconv / OpenPCDet environment before Phase 1 begins.
+Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
+This phase adds project-owned KITTI parsing, coordinate transforms, oriented
+3D boxes, projection, statistics, visualization, and deterministic tests.
+The configured KITTI dataset root is not present on this machine, so
+dataset-backed validation remains explicitly pending.
 
 ## Project Strategy
 
@@ -55,4 +59,6 @@ Then create the GitHub repository, add `origin`, and push `main`. Phase 0 and
 the normal project mainline stay on `main`; do not create `develop` or
 `phase/*` branches for this personal project.
 
-Do **not** add OpenPCDet manually before Phase 0. Let Codex inspect the local environment first, then select and freeze a compatible OpenPCDet commit and dependency combination.
+OpenPCDet is already integrated as the fixed Phase 0 submodule at
+`third_party/OpenPCDet`; Phase 1 geometry does not call it for core parsing or
+coordinate conversion.

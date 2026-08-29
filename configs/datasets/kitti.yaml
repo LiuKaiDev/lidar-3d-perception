@@ -1,0 +1,6 @@
+dataset:
+  name: kitti
+  root: ~/datasets/kitti
+  split: training
+  image_camera: image_2
+  classes: []

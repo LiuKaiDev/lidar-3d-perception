@@ -55,6 +55,7 @@ From the repository root:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e . --no-deps --no-build-isolation
 ```
 
 Install the exact packages and hashes listed in `environment.lock.md`, then

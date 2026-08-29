@@ -32,6 +32,8 @@ Thumbs.db
 # Datasets (never commit raw datasets)
 data/
 datasets/
+!configs/datasets/
+!configs/datasets/**
 *.pcd
 
 # Checkpoints / model weights

@@ -292,3 +292,25 @@ environment directories, or compiled shared objects are tracked.
 PASS.
 
 Repository is ready for Phase 1: KITTI Data & 3D Geometry.
+
+## Phase 1 Tooling Additions
+
+The Phase 0 core environment was not upgraded or downgraded. The following
+Python packages were added for deterministic tests and the requested
+visualization tools:
+
+| Package | Version |
+|---|---|
+| pytest | 8.3.5 |
+| matplotlib | 3.9.2 |
+| open3d | 0.19.0 |
+
+Open3D 0.19.0 has a Python 3.12 wheel in this environment. The package is
+used only by the Phase 1 3D visualization path; NumPy/SciPy geometry remains
+independent of it.
+
+The project package itself is installed editable with:
+
+~~~bash
+python -m pip install -e . --no-deps --no-build-isolation
+~~~

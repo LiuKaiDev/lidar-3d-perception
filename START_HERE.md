@@ -45,20 +45,23 @@ The current personal-project policy keeps Phase 0 and the normal mainline on
 `main`. Do not create `develop` or `phase/*` branches. Reserve `exp/*` for an
 experiment that genuinely needs isolation.
 
-## 4. Start Codex
+## 4. Current Development State
 
-Open Codex with the repository root as its working directory and give it the contents of:
+Phase 0 is complete and frozen in:
 
 ```text
-prompts/phase0/00_start.md
+docs/environment.lock.md
 ```
 
-The design document it must read is already included at:
+Phase 1 implementation is present under `lidar_perception/`, `tools/`, and
+`tests/`. Configure a local KITTI Object Detection dataset through:
 
 ```text
-docs/project_design_v1.md
+configs/datasets/kitti.yaml
 ```
 
 ## 5. Stop condition
 
-Do not enter Phase 1 until Phase 0 acceptance criteria are satisfied and the environment is frozen in `docs/environment.lock.md`.
+Do not enter Phase 2 until the Phase 1 geometry tests pass and a real KITTI
+sample has been validated. Do not claim dataset-backed validation without
+running it against an actual KITTI root.
