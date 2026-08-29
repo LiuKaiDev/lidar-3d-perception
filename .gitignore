@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+.conda/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Datasets (never commit raw datasets)
+data/
+datasets/
+*.pcd
+
+# Checkpoints / model weights
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+
+# Runtime outputs
+outputs/*
+!outputs/.gitkeep
+
+# Experiment runtime artifacts
+experiments/**/logs/
+experiments/**/checkpoints/
+
+# TensorBoard / tracking tools
+runs/
+wandb/
+
+# Build / CUDA extensions
+build/
+dist/
+*.egg
+*.o
+
+# Temporary
+.tmp/
+tmp/
+temp/
+*.log
