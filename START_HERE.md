@@ -41,12 +41,9 @@ git remote add origin git@github.com:<YOUR_USERNAME>/lidar-3d-perception.git
 git push -u origin main
 ```
 
-Create the development branch:
-
-```bash
-git switch -c develop
-git push -u origin develop
-```
+The current personal-project policy keeps Phase 0 and the normal mainline on
+`main`. Do not create `develop` or `phase/*` branches. Reserve `exp/*` for an
+experiment that genuinely needs isolation.
 
 ## 4. Start Codex
 

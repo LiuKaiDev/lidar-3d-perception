@@ -51,6 +51,8 @@ git add .
 git commit -m "chore: initialize lidar perception repository"
 ```
 
-Then create the GitHub repository, add `origin`, push `main`, and create `develop`.
+Then create the GitHub repository, add `origin`, and push `main`. Phase 0 and
+the normal project mainline stay on `main`; do not create `develop` or
+`phase/*` branches for this personal project.
 
 Do **not** add OpenPCDet manually before Phase 0. Let Codex inspect the local environment first, then select and freeze a compatible OpenPCDet commit and dependency combination.
