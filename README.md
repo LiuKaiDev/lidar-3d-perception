@@ -4,17 +4,17 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 2 — PointPillars baseline (implementation complete; checkpoint validation pending)**
+**Phase 2 — PointPillars baseline (PASS)**
 
 Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
 This phase adds project-owned KITTI parsing, coordinate transforms, oriented
 3D boxes, projection, statistics, visualization, and deterministic tests.
 Phase 1 real KITTI geometry validation passed on frames `000000`, `004139`, and
-`007480`. Phase 2 now includes the project-owned detector boundary, unified
-prediction schema, PointPillars adapter, official evaluation wrapper, and
-CUDA-synchronized benchmark tooling. The official PointPillars checkpoint is
-not yet available in the current network environment, so inference/evaluation
-remain explicitly blocked.
+`007480`. Phase 2 includes the project-owned detector boundary, unified
+prediction schema, PointPillars adapter, official evaluation wrapper,
+CUDA-synchronized benchmark tooling, real pretrained inference, visualization,
+and local KITTI evaluation. Results are recorded in
+`outputs/phase2_pointpillar/`.
 
 ## Project Strategy
 
@@ -111,24 +111,25 @@ the wrapper config, the project commands are:
 
 ```bash
 python tools/infer.py --config configs/detectors/pointpillar/kitti.yaml \
-  --frame-id 004139 --output outputs/predictions/004139.json
+  --frame-id 004139 --output outputs/phase2_pointpillar/predictions/004139.json
 
 python tools/visualize.py --config configs/datasets/kitti.yaml \
-  --frame-id 004139 --predictions outputs/predictions/004139.json \
-  --view bev --output outputs/figures/004139_gt_pred_bev.png
+  --frame-id 004139 --predictions outputs/phase2_pointpillar/predictions/004139.json \
+  --view bev --output outputs/phase2_pointpillar/visualizations/004139_gt_pred_bev.png
 
+CUDA_HOME="$PWD/.cuda-home-12.0" \
+LD_LIBRARY_PATH="$PWD/.cuda-home-12.0/nvvm/lib64:$PWD/.cuda-home-12.0/lib64:$LD_LIBRARY_PATH" \
 python tools/evaluate.py --config configs/detectors/pointpillar/kitti.yaml \
-  --split val --output-dir outputs/metrics/pointpillar_kitti
+  --split val --output-dir outputs/phase2_pointpillar/evaluation
 
 python tools/benchmark.py --config configs/detectors/pointpillar/kitti.yaml \
-  --frame-id 004139 --output outputs/metrics/pointpillar_benchmark.json
+  --frame-id 004139 --output outputs/phase2_pointpillar/benchmark.json
 ```
 
-The project currently validates these commands' argument handling and clear
-missing-checkpoint errors, but does not claim detector results until the
-official checkpoint is loaded. OpenPCDet's fixed-revision KITTI evaluator uses
-AP_R40; evaluation and benchmark JSON files record the protocol and timing
-scope so paper/model-zoo numbers cannot be confused with local measurements.
+OpenPCDet's fixed-revision KITTI evaluator uses AP_R40; evaluation and
+benchmark JSON files record the protocol and timing scope so paper/model-zoo
+numbers cannot be confused with local measurements. The measured results are
+summarized in [`docs/04_pointpillars.md`](docs/04_pointpillars.md).
 
 Prepare OpenPCDet's ignored KITTI metadata once (raw data is symlinked, not
 copied):

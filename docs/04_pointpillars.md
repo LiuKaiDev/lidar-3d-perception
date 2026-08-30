@@ -60,11 +60,6 @@ Peak allocated and reserved CUDA memory are captured with PyTorch's memory API
 after warmup for both timing scopes; the top-level peak fields refer to the
 end-to-end scope.
 
-The official Model Zoo checkpoint could not be downloaded in the current
-network environment, so real PointPillars inference, evaluation and benchmark
-results remain pending. No synthetic detector output is presented as a
-baseline result.
-
 The official checkpoint source is the `model-18M` Google Drive link in the
 fixed revision's README:
 
@@ -77,6 +72,48 @@ the local checkpoint filename and the associated OpenPCDet YAML. A successful
 load report records the checkpoint path, source, config, key counts, and
 `load_result: loaded`; incompatible key sets are rejected before inference.
 
-Both direct `curl`/Drive endpoints and `gdown 6.1.0` were attempted; the
-current environment returned `Network is unreachable`. This is the only
-remaining Phase 2 blocker.
+The checkpoint was subsequently supplied locally at
+`~/checkpoints/openpcdet/pointpillar_kitti.pth`.
+
+## Local Phase 2 Results
+
+The supplied checkpoint is 19,383,576 bytes with SHA-256
+`4c83fc0fa02575b9b3e9dec676f698e7a70bb5a795e89f91df8a96b916fa19e2`. It
+loaded against the fixed config with 127/127 model keys and zero missing,
+unexpected, or shape-mismatch keys.
+
+Real inference used GPU preprocessing and the project convention
+`center=[x,y,z]`, `size=[length,width,height]`, `yaw=heading`:
+
+| Frame | Predictions | Classes | Top scores |
+|---|---:|---|---|
+| 000000 | 29 | Car, Pedestrian, Cyclist | 0.8790, 0.7860, 0.7413 |
+| 004139 | 62 | Car, Pedestrian, Cyclist | 0.9456, 0.9393, 0.9334 |
+| 007480 | 50 | Car, Pedestrian, Cyclist | 0.9797, 0.9497, 0.9440 |
+
+The native-to-`Box3D` comparison on `004139` had zero absolute error for
+center, size, and yaw after thresholding. Prediction JSON files are under
+`outputs/phase2_pointpillar/predictions/`; GT-vs-prediction BEV files cover all
+three frames, with a 3D file for `004139`, under
+`outputs/phase2_pointpillar/visualizations/`.
+
+Official evaluation on the 3769-frame val split used OpenPCDet AP_R40:
+
+| Class | BEV Easy | BEV Moderate | BEV Hard | 3D Easy | 3D Moderate | 3D Hard |
+|---|---:|---:|---:|---:|---:|---:|
+| Car | 74.4632 | 73.2043 | 72.1110 | 71.4167 | 65.8038 | 63.2164 |
+| Pedestrian | 46.1495 | 43.0493 | 39.6601 | 42.9543 | 39.7137 | 36.1833 |
+| Cyclist | 68.8149 | 53.0500 | 49.9794 | 65.9770 | 50.4967 | 47.0470 |
+
+RTX 2060 benchmark, batch 1, FP32, 20 warmups, 100 measured iterations:
+
+| Scope | Mean ms | Median ms | P95 ms | FPS |
+|---|---:|---:|---:|---:|
+| Model-only | 32.8620 | 32.8268 | 33.7736 | 30.4303 |
+| End-to-end | 52.0698 | 51.1510 | 57.7668 | 19.2050 |
+
+Peak allocated VRAM was 511,781,888 bytes and peak reserved VRAM was
+803,209,216 bytes in the end-to-end scope. Model-only timing uses CUDA Events;
+end-to-end timing uses `perf_counter` plus explicit CUDA synchronization.
+Results are saved in `outputs/phase2_pointpillar/evaluation/summary.json` and
+`outputs/phase2_pointpillar/benchmark.json`.

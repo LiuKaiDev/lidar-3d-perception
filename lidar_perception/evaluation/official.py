@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 from typing import Any
 
@@ -76,7 +77,9 @@ def evaluate_kitti(
     # infos; otherwise use the prepared project tree whose raw directories are
     # symlinks to the configured KITTI dataset.
     root = configured_root if (configured_root / f"kitti_infos_{'val' if split == 'val' else 'test'}.pkl").is_file() else generated_root.resolve()
-    data_cfg = backend.cfg.DATA_CONFIG.copy()
+    # ``EasyDict.copy()`` returns a plain dict in this OpenPCDet revision;
+    # deepcopy preserves the attribute-access mapping expected by KittiDataset.
+    data_cfg = copy.deepcopy(backend.cfg.DATA_CONFIG)
     data_cfg.DATA_SPLIT = {"train": "train", "test": split}
     data_cfg.INFO_PATH = {"train": ["kitti_infos_train.pkl"], "test": [f"kitti_infos_{'val' if split == 'val' else 'test'}.pkl"]}
     dataset = KittiDataset(data_cfg, backend.class_names, training=False, root_path=root, logger=None)
