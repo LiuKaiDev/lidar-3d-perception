@@ -60,8 +60,13 @@ Phase 1 implementation is present under `lidar_perception/`, `tools/`, and
 configs/datasets/kitti.yaml
 ```
 
+Phase 2 PointPillars project adapters are present under
+`lidar_perception/detection/`, `lidar_perception/evaluation/`, and
+`lidar_perception/benchmark/`. The official pretrained checkpoint is still
+required before inference, evaluation, or benchmark results can be claimed.
+
 ## 5. Stop condition
 
-Do not enter Phase 2 until the Phase 1 geometry tests pass and a real KITTI
-sample has been validated. Do not claim dataset-backed validation without
-running it against an actual KITTI root.
+Do not enter Phase 3 until the PointPillars checkpoint, real inference, official
+KITTI evaluation, and benchmark have all passed. Do not claim detector results
+without loading a real checkpoint.

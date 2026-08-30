@@ -314,3 +314,35 @@ The project package itself is installed editable with:
 ~~~bash
 python -m pip install -e . --no-deps --no-build-isolation
 ~~~
+
+## Phase 2 Tooling Additions
+
+The Phase 0 core versions remain unchanged. OpenPCDet's fixed revision imports
+its optional Argoverse2 dataset module from `pcdet.datasets`; for this
+revision, the following Python packages were added so the KITTI data/model
+APIs can import under Python 3.12 and Torch 2.5.1:
+
+| Package | Version | Purpose |
+|---|---|---|
+| kornia | 0.6.12 | Compatible Argo2 import dependency |
+| av2 | 0.2.1 | Compatible Argo2 import dependency |
+| gdown | 6.1.0 | Attempted official Model Zoo download |
+
+Kornia 0.7.4 was tested first but its TorchScript conversion API failed to
+compile under Torch 2.5.1; 0.6.12 imported successfully. These packages are
+not used by the PointPillars network itself. The official checkpoint download
+was attempted through Google Drive and was blocked by the current network
+(`Network is unreachable`); no checkpoint was created.
+
+OpenPCDet KITTI metadata was prepared without copying the raw dataset:
+
+~~~bash
+ln -sfn ~/datasets/kitti/training third_party/OpenPCDet/data/kitti/training
+ln -sfn ~/datasets/kitti/testing third_party/OpenPCDet/data/kitti/testing
+PYTHONPATH= .venv/bin/python -m pcdet.datasets.kitti.kitti_dataset \
+  create_kitti_infos tools/cfgs/dataset_configs/kitti_dataset.yaml
+~~~
+
+This generated ignored `kitti_infos_train.pkl`, `kitti_infos_val.pkl`,
+`kitti_infos_trainval.pkl`, `kitti_infos_test.pkl`, `kitti_dbinfos_train.pkl`,
+and `gt_database/` under `third_party/OpenPCDet/data/kitti`.

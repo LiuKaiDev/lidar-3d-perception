@@ -10,3 +10,15 @@ requires-python = ">=3.12"
 
 [tool.setuptools.packages.find]
 include = ["lidar_perception*"]
+
+[project.optional-dependencies]
+phase1 = [
+    "pytest==8.3.5",
+    "matplotlib==3.9.2",
+    "open3d==0.19.0",
+]
+phase2 = [
+    "kornia==0.6.12",
+    "av2==0.2.1",
+    "gdown==6.1.0",
+]

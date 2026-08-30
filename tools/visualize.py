@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 
 from lidar_perception.datasets.kitti_adapter import KittiAdapter, KittiError
+from lidar_perception.detection.schemas import PredictionBatch
 from lidar_perception.geometry.boxes3d import Box3D
 from lidar_perception.geometry.projection import project_box_to_image, project_points_to_image
 from lidar_perception.utils.config import dataset_config, load_yaml_config
@@ -24,6 +25,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--split", help="Override dataset.split")
     parser.add_argument("--frame-id", required=True, help="KITTI frame stem, for example 000123")
     parser.add_argument("--view", choices=("bev", "3d", "image"), default="bev")
+    parser.add_argument("--predictions", help="Project PredictionBatch JSON to overlay")
     parser.add_argument("--output", help="Save a figure instead of opening an interactive window")
     parser.add_argument("--max-points", type=int, default=150000, help="Maximum points drawn in a 3D view")
     return parser
@@ -46,7 +48,7 @@ def _finish_figure(figure, output: str | None) -> None:
         plt.show()
 
 
-def _plot_bev(frame, boxes: list[Box3D], output: str | None) -> None:
+def _plot_bev(frame, boxes: list[Box3D], output: str | None, predicted_boxes: list[Box3D] | None = None) -> None:
     import matplotlib.pyplot as plt
 
     figure, axis = plt.subplots(figsize=(11, 9))
@@ -58,6 +60,13 @@ def _plot_bev(frame, boxes: list[Box3D], output: str | None) -> None:
         color = _box_color(index)
         axis.plot(closed[:, 0], closed[:, 1], color=color, linewidth=1.8)
         axis.text(box.center[0], box.center[1], box.label, color=color, fontsize=8)
+    for index, box in enumerate(predicted_boxes or []):
+        corners = box.bev
+        closed = np.vstack((corners, corners[0]))
+        color = _box_color(index)
+        axis.plot(closed[:, 0], closed[:, 1], color=color, linewidth=1.4, linestyle="--")
+        score = "" if box.score is None else f" {box.score:.2f}"
+        axis.text(box.center[0], box.center[1], f"P:{box.label}{score}", color=color, fontsize=7)
     axis.set_title(f"KITTI {frame.frame_id} | BEV")
     axis.set_xlabel("LiDAR x (forward, m)")
     axis.set_ylabel("LiDAR y (left, m)")
@@ -66,7 +75,7 @@ def _plot_bev(frame, boxes: list[Box3D], output: str | None) -> None:
     _finish_figure(figure, output)
 
 
-def _plot_3d_matplotlib(frame, boxes: list[Box3D], output: str, max_points: int) -> None:
+def _plot_3d_matplotlib(frame, boxes: list[Box3D], output: str, max_points: int, predicted_boxes: list[Box3D] | None = None) -> None:
     import matplotlib.pyplot as plt
 
     from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
@@ -84,6 +93,13 @@ def _plot_3d_matplotlib(frame, boxes: list[Box3D], output: str, max_points: int)
         for start, end in BOX_EDGES:
             axis.plot(*zip(corners[start], corners[end]), color=color, linewidth=1.4)
         axis.text(*box.center, box.label, color=color, fontsize=8)
+    for index, box in enumerate(predicted_boxes or []):
+        corners = box.corners
+        color = _box_color(index)
+        for start, end in BOX_EDGES:
+            axis.plot(*zip(corners[start], corners[end]), color=color, linewidth=1.2, linestyle="--")
+        score = "" if box.score is None else f" {box.score:.2f}"
+        axis.text(*box.center, f"P:{box.label}{score}", color=color, fontsize=7)
     axis.set_title(f"KITTI {frame.frame_id} | 3D")
     axis.set_xlabel("x")
     axis.set_ylabel("y")
@@ -91,7 +107,7 @@ def _plot_3d_matplotlib(frame, boxes: list[Box3D], output: str, max_points: int)
     _finish_figure(figure, output)
 
 
-def _plot_3d_open3d(frame, boxes: list[Box3D]) -> None:
+def _plot_3d_open3d(frame, boxes: list[Box3D], predicted_boxes: list[Box3D] | None = None) -> None:
     try:
         import open3d as o3d
     except ImportError as exc:
@@ -106,10 +122,16 @@ def _plot_3d_open3d(frame, boxes: list[Box3D]) -> None:
         line_set.lines = o3d.utility.Vector2iVector(BOX_EDGES)
         line_set.colors = o3d.utility.Vector3dVector([_box_color(index)] * len(BOX_EDGES))
         geometries.append(line_set)
+    for index, box in enumerate(predicted_boxes or []):
+        line_set = o3d.geometry.LineSet()
+        line_set.points = o3d.utility.Vector3dVector(box.corners)
+        line_set.lines = o3d.utility.Vector2iVector(BOX_EDGES)
+        line_set.colors = o3d.utility.Vector3dVector([_box_color(index)] * len(BOX_EDGES))
+        geometries.append(line_set)
     o3d.visualization.draw_geometries(geometries, window_name=f"KITTI {frame.frame_id} | 3D")
 
 
-def _plot_image(adapter: KittiAdapter, frame, boxes: list[Box3D], output: str | None) -> None:
+def _plot_image(adapter: KittiAdapter, frame, boxes: list[Box3D], output: str | None, predicted_boxes: list[Box3D] | None = None) -> None:
     import cv2
     import matplotlib.pyplot as plt
 
@@ -128,6 +150,15 @@ def _plot_image(adapter: KittiAdapter, frame, boxes: list[Box3D], output: str | 
                 axis.plot([result.pixels[start, 0], result.pixels[end, 0]], [result.pixels[start, 1], result.pixels[end, 1]], color=color, linewidth=1.6)
         if result.bbox is not None:
             axis.text(result.bbox[0], result.bbox[1], box.label, color=color, fontsize=8)
+    for index, box in enumerate(predicted_boxes or []):
+        result = project_box_to_image(box, calibration, image_shape=image.shape[:2])
+        color = _box_color(index)
+        for start, end in BOX_EDGES:
+            if result.valid_mask[start] and result.valid_mask[end]:
+                axis.plot([result.pixels[start, 0], result.pixels[end, 0]], [result.pixels[start, 1], result.pixels[end, 1]], color=color, linewidth=1.2, linestyle="--")
+        if result.bbox is not None:
+            score = "" if box.score is None else f" {box.score:.2f}"
+            axis.text(result.bbox[0], result.bbox[1], f"P:{box.label}{score}", color=color, fontsize=7)
     axis.set_title(f"KITTI {frame.frame_id} | image_2 projection")
     axis.set_axis_off()
     _finish_figure(figure, output)
@@ -143,16 +174,22 @@ def main() -> int:
         frame = adapter.load_frame(args.frame_id)
         classes = set(section.get("classes", [])) or None
         boxes = adapter.load_boxes(args.frame_id, classes=classes)
+        predicted_boxes = None
+        if args.predictions:
+            prediction_path = Path(args.predictions).expanduser()
+            if not prediction_path.is_file():
+                raise FileNotFoundError(f"prediction JSON not found: {prediction_path}")
+            predicted_boxes = PredictionBatch.from_dict(__import__("json").loads(prediction_path.read_text())).boxes
     except (KittiError, FileNotFoundError, ValueError) as exc:
         raise SystemExit(f"KITTI visualization failed: {exc}") from exc
     if args.view == "bev":
-        _plot_bev(frame, boxes, args.output)
+        _plot_bev(frame, boxes, args.output, predicted_boxes)
     elif args.view == "image":
-        _plot_image(adapter, frame, boxes, args.output)
+        _plot_image(adapter, frame, boxes, args.output, predicted_boxes)
     elif args.output:
-        _plot_3d_matplotlib(frame, boxes, args.output, args.max_points)
+        _plot_3d_matplotlib(frame, boxes, args.output, args.max_points, predicted_boxes)
     else:
-        _plot_3d_open3d(frame, boxes)
+        _plot_3d_open3d(frame, boxes, predicted_boxes)
     return 0
 
 
