@@ -363,9 +363,13 @@ runtime dependencies:
 | descartes | 1.1.0 |
 | shapely | 2.0.6 |
 | pycocotools | 2.0.11 |
+| torch-scatter | 2.1.2+pt25cu124 |
 
 The available dataset is `~/datasets/nuscenes/v1.0-mini` (10 scenes, 404
 samples). Raw data is linked into `third_party/OpenPCDet/data/nuscenes`; no
 dataset files or generated infos are tracked. The official CenterPoint config
-is `cbgs_voxel0075_res3d_centerpoint.yaml`; its matching Model Zoo checkpoint
-is recorded in `configs/detectors/centerpoint/nuscenes_mini.yaml`.
+used for the validated Phase 3 run is
+`cbgs_dyn_pp_centerpoint.yaml`; its matching Model Zoo checkpoint is recorded
+in `configs/detectors/centerpoint/nuscenes_mini.yaml`. `torch-scatter` is
+required by OpenPCDet's dynamic pillar VFE and is installed as the CUDA 12.4
+wheel shown above.

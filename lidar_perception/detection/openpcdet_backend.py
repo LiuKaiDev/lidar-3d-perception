@@ -128,6 +128,10 @@ class OpenPCDetBackend(DetectorBackend):
         if not (self.opcdet_root / "pcdet").is_dir():
             raise FileNotFoundError(f"OpenPCDet source not found: {self.opcdet_root}")
 
+        # The pinned OpenPCDet revision still references NumPy's removed alias.
+        if not hasattr(np, "int"):
+            np.int = int  # type: ignore[attr-defined]
+
         from pcdet.config import cfg, cfg_from_yaml_file
         from pcdet.models import build_network
 

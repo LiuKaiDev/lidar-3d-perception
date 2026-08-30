@@ -1,9 +1,9 @@
 backend:
   type: openpcdet
   model: centerpoint
-  openpcdet_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_voxel0075_res3d_centerpoint.yaml
-  checkpoint: ~/checkpoints/openpcdet/centerpoint_nuscenes_voxel0075.pth
-  checkpoint_source: https://drive.google.com/file/d/1XOHAWm1MPkCKr1gqmc3TWi5AYZgPsgxU/view?usp=sharing
+  openpcdet_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_dyn_pp_centerpoint.yaml
+  checkpoint: ~/checkpoints/openpcdet/centerpoint_nuscenes_pp.pth
+  checkpoint_source: https://drive.google.com/file/d/1UvGm6mROMyJzeSRu7OD1leU_YWoAZG7v/view?usp=sharing
   device: cuda
   score_threshold: 0.1
 
