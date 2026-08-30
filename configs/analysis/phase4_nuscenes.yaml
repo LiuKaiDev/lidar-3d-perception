@@ -1,0 +1,32 @@
+dataset:
+  root: ~/datasets/nuscenes
+  version: v1.0-mini
+  split: mini_val
+  max_sweeps: 10
+
+detector:
+  config: configs/detectors/centerpoint/nuscenes_mini.yaml
+  predictions_dir: outputs/phase3_centerpoint/predictions
+
+analysis:
+  output_dir: outputs/phase4_analysis
+  score_filtering_policy: backend score_threshold from detector config (0.1)
+  density_policy: current keyframe only (time_lag == 0)
+  random_seed: null
+  matching_threshold_m: 2.0
+  distance_bins:
+    - {name: 0-10m, lower: 0, upper: 10}
+    - {name: 10-20m, lower: 10, upper: 20}
+    - {name: 20-30m, lower: 20, upper: 30}
+    - {name: 30-40m, lower: 30, upper: 40}
+    - {name: 40-50m, lower: 40, upper: 50}
+    - {name: 50m+, lower: 50, upper: .inf}
+  density_bins:
+    - {name: 0-5, lower: 0, upper: 6}
+    - {name: 6-10, lower: 6, upper: 11}
+    - {name: 11-20, lower: 11, upper: 21}
+    - {name: 21-50, lower: 21, upper: 51}
+    - {name: 51+, lower: 51, upper: .inf}
+  max_cases_per_category: 5
+  low_confidence_threshold: 0.3
+  high_localization_error_m: 1.0

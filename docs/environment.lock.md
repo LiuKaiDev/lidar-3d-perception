@@ -365,6 +365,13 @@ runtime dependencies:
 | pycocotools | 2.0.11 |
 | torch-scatter | 2.1.2+pt25cu124 |
 
+The dynamic-pillar baseline uses the matching PyG wheel:
+
+~~~bash
+pip install --no-deps torch-scatter==2.1.2 \\
+  -f https://data.pyg.org/whl/torch-2.5.0+cu124.html
+~~~
+
 The available dataset is `~/datasets/nuscenes/v1.0-mini` (10 scenes, 404
 samples). Raw data is linked into `third_party/OpenPCDet/data/nuscenes`; no
 dataset files or generated infos are tracked. The official CenterPoint config

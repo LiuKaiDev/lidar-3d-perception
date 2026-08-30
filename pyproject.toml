@@ -28,4 +28,5 @@ phase3 = [
     "descartes==1.1.0",
     "shapely==2.0.6",
     "pycocotools==2.0.11",
+    "torch-scatter==2.1.2+pt25cu124",
 ]

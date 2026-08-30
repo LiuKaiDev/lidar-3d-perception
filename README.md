@@ -4,17 +4,15 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 2 — PointPillars baseline (PASS)**
+**Phase 4 — Distance / Density Analysis (PASS)**
 
 Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
-This phase adds project-owned KITTI parsing, coordinate transforms, oriented
-3D boxes, projection, statistics, visualization, and deterministic tests.
 Phase 1 real KITTI geometry validation passed on frames `000000`, `004139`, and
-`007480`. Phase 2 includes the project-owned detector boundary, unified
-prediction schema, PointPillars adapter, official evaluation wrapper,
-CUDA-synchronized benchmark tooling, real pretrained inference, visualization,
-and local KITTI evaluation. Results are recorded in
-`outputs/phase2_pointpillar/`.
+`007480`; Phase 2 covers the PointPillars detector boundary and KITTI
+evaluation. Phase 3 validated the pretrained nuScenes CenterPoint-PointPillar
+pipeline, and Phase 4 adds project-owned matching, stratified metrics,
+bad-case mining, and reproducible reports. Results are recorded in
+`outputs/phase2_pointpillar/` and `outputs/phase4_analysis/`.
 
 ## Project Strategy
 
@@ -39,7 +37,7 @@ See [`docs/project_design_v1.md`](docs/project_design_v1.md) for the frozen V1.0
 2. Phase 1 — KITTI data and 3D geometry
 3. Phase 2 — PointPillars baseline
 4. Phase 3 — nuScenes + CenterPoint-PointPillar (validated mini pipeline)
-5. Phase 4 — Layered evaluation and bad-case mining
+5. Phase 4 — Layered evaluation and bad-case mining (validated mini analysis)
 6. Phase 5 — Multi-model benchmark
 7. Phase 6 — Long-range sparse-object optimization
 8. Phase 7 — Engineering and portfolio packaging
@@ -161,3 +159,20 @@ cd third_party/OpenPCDet
 PYTHONPATH= ../../.venv/bin/python -m pcdet.datasets.kitti.kitti_dataset \
   create_kitti_infos tools/cfgs/dataset_configs/kitti_dataset.yaml
 ```
+
+## Phase 4 Distance / Density Analysis
+
+The project-owned matcher, distance/density evaluators, bad-case miner, and
+reporting pipeline are documented in
+[`docs/08_distance_density_analysis.md`](docs/08_distance_density_analysis.md).
+Run the complete mini-dataset analysis with cached Phase 3 predictions (the
+runner fills only missing valid samples):
+
+```bash
+PYTHONPATH=. python tools/analyze_phase4.py \
+  --config configs/analysis/phase4_nuscenes.yaml
+```
+
+Reports and representative snapshots are written under
+`outputs/phase4_analysis/`. Results are exploratory `nuScenes v1.0-mini`
+analysis and do not replace official nuScenes metrics.
