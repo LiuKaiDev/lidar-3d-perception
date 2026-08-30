@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from lidar_perception.detection.openpcdet_backend import OpenPCDetBackend
+from lidar_perception.detection.openpcdet_backend import CenterPointBackend, OpenPCDetBackend
 from lidar_perception.utils.config import load_yaml_config
 from lidar_perception.utils.io import save_json
 
@@ -28,7 +28,8 @@ def make_backend(config: dict[str, Any], opcdet_config: Path, checkpoint: str | 
     checkpoint_path = checkpoint or backend_cfg.get("checkpoint")
     if checkpoint_path is None:
         raise ValueError("checkpoint is required in config or --checkpoint")
-    return OpenPCDetBackend(
+    backend_class = CenterPointBackend if str(backend_cfg.get("model", "")).lower() == "centerpoint" else OpenPCDetBackend
+    return backend_class(
         config_path=opcdet_config,
         checkpoint_path=checkpoint_path,
         checkpoint_source=backend_cfg.get("checkpoint_source"),

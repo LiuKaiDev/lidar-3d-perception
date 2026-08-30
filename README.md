@@ -38,7 +38,7 @@ See [`docs/project_design_v1.md`](docs/project_design_v1.md) for the frozen V1.0
 1. Phase 0 — Environment and repository initialization
 2. Phase 1 — KITTI data and 3D geometry
 3. Phase 2 — PointPillars baseline
-4. Phase 3 — nuScenes + CenterPoint
+4. Phase 3 — nuScenes + CenterPoint (pipeline implementation; checkpoint pending)
 5. Phase 4 — Layered evaluation and bad-case mining
 6. Phase 5 — Multi-model benchmark
 7. Phase 6 — Long-range sparse-object optimization
@@ -130,6 +130,25 @@ OpenPCDet's fixed-revision KITTI evaluator uses AP_R40; evaluation and
 benchmark JSON files record the protocol and timing scope so paper/model-zoo
 numbers cannot be confused with local measurements. The measured results are
 summarized in [`docs/04_pointpillars.md`](docs/04_pointpillars.md).
+
+## Phase 3 nuScenes + CenterPoint
+
+The project-owned nuScenes adapter, multi-sweep transforms, CenterPoint
+boundary, velocity-preserving schema conversion, official mini evaluator, and
+scene visualizer are documented in
+[`docs/05_nuscenes_centerpoint.md`](docs/05_nuscenes_centerpoint.md). The
+available data is `~/datasets/nuscenes/v1.0-mini` and is pipeline validation
+only. The matching pretrained checkpoint is not currently available locally;
+the exact config/source/path are recorded in
+[`configs/detectors/centerpoint/nuscenes_mini.yaml`](configs/detectors/centerpoint/nuscenes_mini.yaml).
+
+After placing that checkpoint locally, run a sample with:
+
+```bash
+python tools/infer_nuscenes.py --sample-token <sample-token>
+python tools/visualize_nuscenes.py --sample-token <sample-token>
+python tools/evaluate_nuscenes.py
+```
 
 Prepare OpenPCDet's ignored KITTI metadata once (raw data is symlinked, not
 copied):

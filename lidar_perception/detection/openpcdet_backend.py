@@ -91,6 +91,7 @@ class OpenPCDetBackend(DetectorBackend):
         self.cfg = None
         self.model = None
         self.dataset = None
+        self.model_name: str | None = None
         self.class_names: list[str] = []
         self.load_report: dict[str, Any] = {}
 
@@ -105,7 +106,7 @@ class OpenPCDetBackend(DetectorBackend):
         return threshold
 
     def load(self, config_path: str | Path | None = None, checkpoint_path: str | Path | None = None) -> None:
-        """Load the fixed-revision OpenPCDet config, model, and checkpoint."""
+        """Load a fixed-revision OpenPCDet config, model, and checkpoint."""
 
         if self.device.type != "cuda":
             raise RuntimeError("OpenPCDet PointPillars backend requires device='cuda'; CPU is supported only for schema tests")
@@ -115,10 +116,11 @@ class OpenPCDetBackend(DetectorBackend):
         if checkpoint_path is not None:
             self.checkpoint_path = Path(checkpoint_path).expanduser().resolve()
         if self.config_path is None:
-            raise ValueError("PointPillars OpenPCDet config path is required")
+            raise ValueError("OpenPCDet detector config path is required")
         if self.checkpoint_path is None or not self.checkpoint_path.is_file():
+            model_hint = "PointPillars" if "pointpillar" in str(self.config_path).lower() else "detector"
             raise FileNotFoundError(
-                f"PointPillars checkpoint not found: {self.checkpoint_path}. "
+                f"{model_hint} checkpoint not found: {self.checkpoint_path}. "
                 "Download the official Model Zoo checkpoint and pass --checkpoint."
             )
         if not self.config_path.is_file():
@@ -135,11 +137,12 @@ class OpenPCDetBackend(DetectorBackend):
         with _working_directory(self.opcdet_root / "tools"):
             cfg_from_yaml_file(str(self.config_path), cfg)
         self.cfg = cfg
+        self.model_name = str(cfg.MODEL.NAME)
         self.class_names = list(cfg.CLASS_NAMES)
         self.dataset = _SingleFrameDataset(
             dataset_cfg=cfg.DATA_CONFIG,
             class_names=self.class_names,
-            root_path=self.opcdet_root / "data" / "kitti",
+            root_path=self.opcdet_root / "data" / ("nuscenes" if "nuscenes" in str(cfg.DATA_CONFIG.get("DATASET", "")).lower() else "kitti"),
         )
         self.model = build_network(model_cfg=cfg.MODEL, num_class=len(self.class_names), dataset=self.dataset)
         self.model.to(self.device)
@@ -240,10 +243,13 @@ class OpenPCDetBackend(DetectorBackend):
         return self._predict_prepared(self.prepare_frame(frame))
 
     def predict(self, frame: PointCloudFrame) -> PredictionBatch:
-        """Run PointPillars and convert native ``[x,y,z,dx,dy,dz,heading]`` boxes."""
+        """Run the configured OpenPCDet detector and convert native boxes."""
 
         pred_dict, runtime_ms = self.predict_native(frame)
-        return self.native_prediction_to_batch(frame.frame_id, pred_dict, runtime_ms=runtime_ms)
+        prediction = self.native_prediction_to_batch(frame.frame_id, pred_dict, runtime_ms=runtime_ms)
+        if "sample_token" in frame.metadata:
+            prediction.metadata["sample_token"] = frame.metadata["sample_token"]
+        return prediction
 
     def native_prediction_to_batch(
         self,
@@ -274,6 +280,11 @@ class OpenPCDetBackend(DetectorBackend):
                 raise ValueError(f"OpenPCDet class index out of range: {label_index}")
             if not np.all(np.isfinite(native_box[:7])):
                 raise ValueError("OpenPCDet prediction contains non-finite box values")
+            velocity = None
+            if len(native_box) >= 9:
+                if not np.all(np.isfinite(native_box[7:9])):
+                    raise ValueError("OpenPCDet prediction contains non-finite velocity values")
+                velocity = np.array([native_box[7], native_box[8], 0.0], dtype=np.float64)
             result_boxes.append(
                 Box3D(
                     center=native_box[:3],
@@ -281,6 +292,7 @@ class OpenPCDetBackend(DetectorBackend):
                     yaw=float(native_box[6]),
                     label=self.class_names[label_index - 1],
                     score=float(score),
+                    velocity=velocity,
                 )
             )
         return PredictionBatch(
@@ -326,3 +338,10 @@ def _move_batch_to_device(batch_dict: dict[str, Any], device: torch.device) -> d
         else:
             result[key] = value
     return result
+
+
+class CenterPointBackend(OpenPCDetBackend):
+    """CenterPoint specialization using the shared OpenPCDet boundary."""
+
+    def name(self) -> str:
+        return "openpcdet_centerpoint"

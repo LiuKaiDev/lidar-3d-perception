@@ -346,3 +346,26 @@ PYTHONPATH= .venv/bin/python -m pcdet.datasets.kitti.kitti_dataset \
 This generated ignored `kitti_infos_train.pkl`, `kitti_infos_val.pkl`,
 `kitti_infos_trainval.pkl`, `kitti_infos_test.pkl`, `kitti_dbinfos_train.pkl`,
 and `gt_database/` under `third_party/OpenPCDet/data/kitti`.
+
+## Phase 3 Tooling Additions
+
+The Phase 0-2 torch/CUDA/spconv/OpenPCDet versions remain unchanged. The
+nuScenes mini adapter and official evaluator use `nuscenes-devkit==1.2.0`,
+which is compatible with the frozen Python 3.12 visualization stack. The
+package was installed without dependency resolution; existing validated
+OpenCV, NumPy, SciPy, Pillow, sklearn, and pyquaternion packages provide the
+runtime dependencies:
+
+| Package | Version |
+|---|---|
+| nuscenes-devkit | 1.2.0 |
+| cachetools | 7.1.7 |
+| descartes | 1.1.0 |
+| shapely | 2.0.6 |
+| pycocotools | 2.0.11 |
+
+The available dataset is `~/datasets/nuscenes/v1.0-mini` (10 scenes, 404
+samples). Raw data is linked into `third_party/OpenPCDet/data/nuscenes`; no
+dataset files or generated infos are tracked. The official CenterPoint config
+is `cbgs_voxel0075_res3d_centerpoint.yaml`; its matching Model Zoo checkpoint
+is recorded in `configs/detectors/centerpoint/nuscenes_mini.yaml`.

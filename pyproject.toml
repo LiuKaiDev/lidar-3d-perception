@@ -22,3 +22,10 @@ phase2 = [
     "av2==0.2.1",
     "gdown==6.1.0",
 ]
+phase3 = [
+    "nuscenes-devkit==1.2.0",
+    "cachetools==7.1.7",
+    "descartes==1.1.0",
+    "shapely==2.0.6",
+    "pycocotools==2.0.11",
+]

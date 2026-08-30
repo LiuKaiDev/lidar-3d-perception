@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 
-from lidar_perception.detection.openpcdet_backend import OpenPCDetBackend, _move_batch_to_device
+from lidar_perception.detection.openpcdet_backend import CenterPointBackend, OpenPCDetBackend, _move_batch_to_device
 
 
 def test_native_openpcdet_prediction_maps_to_project_schema() -> None:
@@ -49,3 +49,18 @@ def test_score_threshold_must_be_finite_and_bounded() -> None:
             },
             score_threshold=1.1,
         )
+
+
+def test_centerpoint_native_prediction_preserves_velocity() -> None:
+    backend = CenterPointBackend(device="cpu", score_threshold=0.1)
+    backend.class_names = ["car"]
+    prediction = backend.native_prediction_to_batch(
+        "sample",
+        {
+            "pred_boxes": torch.tensor([[1, 2, 3, 4, 2, 1, 0.25, 5, -2]], dtype=torch.float32),
+            "pred_scores": torch.tensor([0.8], dtype=torch.float32),
+            "pred_labels": torch.tensor([1], dtype=torch.long),
+        },
+    )
+    assert prediction.boxes[0].velocity.tolist() == [5.0, -2.0, 0.0]
+    assert prediction.boxes[0].size.tolist() == [4.0, 2.0, 1.0]

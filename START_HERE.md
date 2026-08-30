@@ -62,11 +62,19 @@ configs/datasets/kitti.yaml
 
 Phase 2 PointPillars project adapters are present under
 `lidar_perception/detection/`, `lidar_perception/evaluation/`, and
-`lidar_perception/benchmark/`. The official pretrained checkpoint is still
-required before inference, evaluation, or benchmark results can be claimed.
+`lidar_perception/benchmark/`. Phase 2 is PASS with the official checkpoint,
+real KITTI inference/evaluation, GT-vs-prediction visualizations, and RTX 2060
+benchmark recorded in `docs/04_pointpillars.md`.
+
+Phase 3 nuScenes/CenterPoint pipeline code is present under
+`lidar_perception/datasets/nuscenes_adapter.py`,
+`lidar_perception/evaluation/nuscenes.py`, and the `tools/*nuscenes*.py`
+commands. It currently validates the `v1.0-mini` data path and contracts; the
+matching CenterPoint checkpoint is still required for real detector results.
 
 ## 5. Stop condition
 
-Do not enter Phase 3 until the PointPillars checkpoint, real inference, official
-KITTI evaluation, and benchmark have all passed. Do not claim detector results
-without loading a real checkpoint.
+Do not enter Phase 4 until the CenterPoint checkpoint, real mini inference,
+official mini evaluation, velocity visualization, and regression tests have
+passed. Full nuScenes train/val metrics remain deferred until the full dataset
+is available.

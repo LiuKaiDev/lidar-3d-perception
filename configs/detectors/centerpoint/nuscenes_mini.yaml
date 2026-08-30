@@ -1,0 +1,19 @@
+backend:
+  type: openpcdet
+  model: centerpoint
+  openpcdet_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_voxel0075_res3d_centerpoint.yaml
+  checkpoint: ~/checkpoints/openpcdet/centerpoint_nuscenes_voxel0075.pth
+  checkpoint_source: https://drive.google.com/file/d/1XOHAWm1MPkCKr1gqmc3TWi5AYZgPsgxU/view?usp=sharing
+  device: cuda
+  score_threshold: 0.1
+
+dataset:
+  name: nuscenes
+  root: ~/datasets/nuscenes
+  version: v1.0-mini
+  split: mini_val
+  max_sweeps: 10
+
+evaluation:
+  label: nuScenes v1.0-mini / pipeline validation
+  split: mini_val

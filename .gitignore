@@ -34,6 +34,9 @@ data/
 datasets/
 !configs/datasets/
 !configs/datasets/**
+!lidar_perception/datasets/
+!lidar_perception/datasets/**
+lidar_perception/datasets/**/__pycache__/
 *.pcd
 
 # Checkpoints / model weights
