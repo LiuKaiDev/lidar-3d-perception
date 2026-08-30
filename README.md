@@ -4,13 +4,13 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 1 — KITTI data and 3D geometry (implementation complete; dataset validation pending)**
+**Phase 1 — KITTI data and 3D geometry (PASS)**
 
 Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
 This phase adds project-owned KITTI parsing, coordinate transforms, oriented
 3D boxes, projection, statistics, visualization, and deterministic tests.
-The configured KITTI dataset root is not present on this machine, so
-dataset-backed validation remains explicitly pending.
+Real KITTI training data has been validated on frames `000000`, `004139`, and
+`007480`; the full training split statistics also complete successfully.
 
 ## Project Strategy
 
@@ -62,3 +62,30 @@ the normal project mainline stay on `main`; do not create `develop` or
 OpenPCDet is already integrated as the fixed Phase 0 submodule at
 `third_party/OpenPCDet`; Phase 1 geometry does not call it for core parsing or
 coordinate conversion.
+
+## Phase 1 Validation
+
+The validated KITTI Object Detection root is configured as
+`~/datasets/kitti`. The training split contains 7481 aligned Velodyne,
+calibration, label, and image files. Full ground-truth statistics cover 7481
+frames and 40570 non-`DontCare` annotations.
+
+Run the tests and tools with the Phase 0 virtual environment:
+
+```bash
+source .venv/bin/activate
+PYTHONPATH= pytest -q
+
+python tools/analyze_dataset.py \
+  --config configs/datasets/kitti.yaml \
+  --output outputs/phase1_validation/kitti_training_stats.json
+
+python tools/visualize.py \
+  --config configs/datasets/kitti.yaml \
+  --frame-id 004139 \
+  --view bev \
+  --output outputs/phase1_validation/004139_bev.png
+```
+
+The fixed real-data validation frames and generated image paths are recorded
+in [`docs/02_coordinate_systems.md`](docs/02_coordinate_systems.md).
