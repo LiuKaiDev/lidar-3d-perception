@@ -1,4 +1,4 @@
-"""OpenPCDet PointPillars adapter.
+"""Unified OpenPCDet detector adapter.
 
 OpenPCDet remains a third-party implementation. This module owns only the
 boundary conversion from :class:`PointCloudFrame` to the project's
@@ -8,6 +8,7 @@ boundary conversion from :class:`PointCloudFrame` to the project's
 from __future__ import annotations
 
 import copy
+import hashlib
 import logging
 import os
 import time
@@ -69,7 +70,7 @@ class _SingleFrameDataset:
 
 
 class OpenPCDetBackend(DetectorBackend):
-    """Project adapter for the fixed OpenPCDet PointPillars implementation."""
+    """Project adapter for detector implementations in fixed OpenPCDet."""
 
     def __init__(
         self,
@@ -79,11 +80,13 @@ class OpenPCDetBackend(DetectorBackend):
         score_threshold: float = 0.1,
         opcdet_root: str | Path = "third_party/OpenPCDet",
         checkpoint_source: str | None = None,
+        model_type: str | None = None,
     ) -> None:
         self.opcdet_root = Path(opcdet_root).expanduser().resolve()
         self.config_path = None if config_path is None else Path(config_path).expanduser().resolve()
         self.checkpoint_path = None if checkpoint_path is None else Path(checkpoint_path).expanduser().resolve()
         self.checkpoint_source = checkpoint_source
+        self.model_type = None if model_type is None else str(model_type).lower()
         self.device = torch.device(device)
         self.score_threshold = self._validate_score_threshold(score_threshold)
         if self.device.type == "cuda" and not torch.cuda.is_available():
@@ -96,7 +99,16 @@ class OpenPCDetBackend(DetectorBackend):
         self.load_report: dict[str, Any] = {}
 
     def name(self) -> str:
-        return "openpcdet_pointpillar"
+        model_type = self.model_type
+        if model_type is None and self.model_name:
+            model_type = self.model_name.lower()
+        names = {
+            "pointpillar": "openpcdet_pointpillar",
+            "pointpillar-multihead": "openpcdet_pointpillar",
+            "centerpoint": "openpcdet_centerpoint",
+            "voxelnext": "openpcdet_voxelnext",
+        }
+        return names.get(model_type, "openpcdet_pointpillar")
 
     @staticmethod
     def _validate_score_threshold(value: float) -> float:
@@ -109,7 +121,7 @@ class OpenPCDetBackend(DetectorBackend):
         """Load a fixed-revision OpenPCDet config, model, and checkpoint."""
 
         if self.device.type != "cuda":
-            raise RuntimeError("OpenPCDet PointPillars backend requires device='cuda'; CPU is supported only for schema tests")
+            raise RuntimeError("OpenPCDet detector backend requires device='cuda'; CPU is supported only for schema tests")
 
         if config_path is not None:
             self.config_path = Path(config_path).expanduser().resolve()
@@ -142,6 +154,8 @@ class OpenPCDetBackend(DetectorBackend):
             cfg_from_yaml_file(str(self.config_path), cfg)
         self.cfg = cfg
         self.model_name = str(cfg.MODEL.NAME)
+        if self.model_type is None:
+            self.model_type = self.model_name.lower()
         self.class_names = list(cfg.CLASS_NAMES)
         self.dataset = _SingleFrameDataset(
             dataset_cfg=cfg.DATA_CONFIG,
@@ -174,6 +188,9 @@ class OpenPCDetBackend(DetectorBackend):
             "shape_mismatch_keys": shape_mismatch,
             "checkpoint_key_count": len(checkpoint_keys),
             "model_key_count": len(model_keys),
+            "checkpoint_size_bytes": self.checkpoint_path.stat().st_size,
+            "checkpoint_sha256": _sha256_file(self.checkpoint_path),
+            "loaded_key_count": len(checkpoint_keys & model_keys),
         }
         if shape_mismatch or missing or unexpected:
             details = []
@@ -200,8 +217,9 @@ class OpenPCDetBackend(DetectorBackend):
             "class_names": self.class_names,
             "model_name": self.cfg.MODEL.NAME,
             "vfe": self.cfg.MODEL.VFE.NAME,
-            "map_to_bev": self.cfg.MODEL.MAP_TO_BEV.NAME,
-            "backbone_2d": self.cfg.MODEL.BACKBONE_2D.NAME,
+            "map_to_bev": _cfg_name(self.cfg.MODEL, "MAP_TO_BEV"),
+            "backbone_2d": _cfg_name(self.cfg.MODEL, "BACKBONE_2D"),
+            "backbone_3d": _cfg_name(self.cfg.MODEL, "BACKBONE_3D"),
             "dense_head": self.cfg.MODEL.DENSE_HEAD.NAME,
             "point_cloud_range": list(self.cfg.DATA_CONFIG.POINT_CLOUD_RANGE),
             "voxel_size": list(self.cfg.DATA_CONFIG.DATA_PROCESSOR[-1].VOXEL_SIZE),
@@ -326,6 +344,23 @@ def clone_batch(value: Any) -> Any:
     return copy.deepcopy(value)
 
 
+def _cfg_name(config: Any, key: str) -> str | None:
+    """Read an optional OpenPCDet component name across model families."""
+
+    component = config.get(key) if hasattr(config, "get") else None
+    if component is None:
+        return None
+    return str(component.get("NAME")) if hasattr(component, "get") and component.get("NAME") else None
+
+
+def _sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(chunk_size), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _move_batch_to_device(batch_dict: dict[str, Any], device: torch.device) -> dict[str, Any]:
     """Convert a collated OpenPCDet NumPy batch without forcing CUDA."""
 
@@ -349,3 +384,10 @@ class CenterPointBackend(OpenPCDetBackend):
 
     def name(self) -> str:
         return "openpcdet_centerpoint"
+
+
+class VoxelNeXtBackend(OpenPCDetBackend):
+    """VoxelNeXt specialization sharing the OpenPCDet project boundary."""
+
+    def name(self) -> str:
+        return "openpcdet_voxelnext"

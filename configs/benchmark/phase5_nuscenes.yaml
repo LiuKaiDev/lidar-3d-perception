@@ -1,0 +1,36 @@
+dataset:
+  name: nuscenes
+  root: ~/datasets/nuscenes
+  version: v1.0-mini
+  split: mini_val
+  max_sweeps: 10
+
+protocol:
+  batch_size: 1
+  precision: FP32
+  warmup: 20
+  iterations: 100
+  timing_method: cuda_events_and_synchronized_wall_clock
+  preprocessing_in_model_only: false
+  preprocessing_in_end_to_end: true
+  postprocessing_included: true
+  sequential_model_isolation: true
+
+models:
+  - name: centerpoint_pointpillar
+    config: configs/detectors/centerpoint/nuscenes_mini.yaml
+    status: cached_accuracy
+  - name: voxelnext
+    config: configs/detectors/voxelnext/nuscenes_mini.yaml
+    status: checkpoint_required
+    checkpoint_acquisition:
+      attempt_count: 1
+      attempted_at: "2026-08-31"
+      timeout_seconds: 60
+      result: timed_out_no_artifact
+  - name: pointpillar_nuscenes
+    config: configs/detectors/pointpillar/nuscenes_mini.yaml
+    status: checkpoint_required
+
+outputs:
+  directory: outputs/phase5_benchmark

@@ -176,3 +176,37 @@ PYTHONPATH=. python tools/analyze_phase4.py \
 Reports and representative snapshots are written under
 `outputs/phase4_analysis/`. Results are exploratory `nuScenes v1.0-mini`
 analysis and do not replace official nuScenes metrics.
+
+## Phase 5 Multi-Model Benchmark
+
+Phase 5 uses one config-driven OpenPCDet boundary for the comparable
+nuScenes candidates:
+
+- CenterPoint-PointPillar: `configs/detectors/centerpoint/nuscenes_mini.yaml`
+- VoxelNeXt: `configs/detectors/voxelnext/nuscenes_mini.yaml`
+- PointPillars MultiHead (optional): `configs/detectors/pointpillar/nuscenes_mini.yaml`
+
+The exact configs and official checkpoint sources come from the pinned
+OpenPCDet revision. Place matching, unmodified Model Zoo checkpoints at the
+paths in those wrappers; never reuse the KITTI PointPillars checkpoint for
+nuScenes. The current machine has the CenterPoint checkpoint at
+`~/checkpoints/openpcdet/centerpoint_nuscenes_pp.pth` with SHA-256
+`955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a`.
+
+Run the sequential benchmark and report generation with the fixed protocol
+(batch 1, FP32, 20 warmups, 100 measured iterations, synchronized CUDA
+timing, preprocessing included only in end-to-end timing):
+
+```bash
+PYTHONPATH=. .venv/bin/python tools/benchmark_phase5.py \
+  --config configs/benchmark/phase5_nuscenes.yaml
+```
+
+To assemble provenance and accuracy without running GPU timing, add
+`--skip-runtime`; to evaluate a newly available candidate with the official
+devkit, add `--evaluate-missing`. Reports are written to
+`outputs/phase5_benchmark/` (`benchmark.json`, `accuracy.json`,
+`benchmark.csv`, `environment.json`, and `README.md`). The main table only
+contains local results from `nuScenes v1.0-mini / mini_val`; the historical
+KITTI PointPillars AP_R40 result remains a separate reference and is never
+ranked with nuScenes mAP/NDS.

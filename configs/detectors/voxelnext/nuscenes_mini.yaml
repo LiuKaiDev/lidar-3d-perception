@@ -1,10 +1,9 @@
 backend:
   type: openpcdet
-  model: centerpoint
-  openpcdet_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_dyn_pp_centerpoint.yaml
-  checkpoint: ~/checkpoints/openpcdet/centerpoint_nuscenes_pp.pth
-  checkpoint_sha256: 955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a
-  checkpoint_source: https://drive.google.com/file/d/1UvGm6mROMyJzeSRu7OD1leU_YWoAZG7v/view?usp=sharing
+  model: voxelnext
+  openpcdet_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_voxel0075_voxelnext.yaml
+  checkpoint: ~/checkpoints/openpcdet/voxelnext_nuscenes.pth
+  checkpoint_source: https://drive.google.com/file/d/1IV7e7G9X-61KXSjMGtQo579pzDNbhwvf/view?usp=share_link
   device: cuda
   score_threshold: 0.1
 
@@ -21,9 +20,9 @@ classes:
   - traffic_cone
 
 model_metadata:
-  display_name: CenterPoint-PointPillar
-  architecture_family: center-based anchor-free detector
-  representation: dynamic pillars with 2D BEV backbone
+  display_name: VoxelNeXt
+  architecture_family: fully sparse center-based detector
+  representation: 0.075 x 0.075 x 0.2 m sparse voxels
   ownership: third-party OpenPCDet baseline
 
 dataset:

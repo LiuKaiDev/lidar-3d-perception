@@ -1,4 +1,4 @@
-"""CUDA-synchronized PointPillars latency and memory benchmark."""
+"""CUDA-synchronized detector latency and memory benchmark."""
 
 from __future__ import annotations
 
