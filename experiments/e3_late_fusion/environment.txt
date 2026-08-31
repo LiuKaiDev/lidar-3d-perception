@@ -1,0 +1,3 @@
+PYTHONPATH=.
+Python 3.12; torch/spconv/OpenPCDet/nuScenes devkit verification pending runtime execution.
+OpenPCDet pinned revision: 233f849829b6ac19afb8af8837a0246890908755

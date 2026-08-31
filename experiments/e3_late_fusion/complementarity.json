@@ -1,0 +1,12 @@
+{
+  "status": "blocked",
+  "reason": "Evaluation requires aligned VoxelNeXt predictions; only CenterPoint caches are available.",
+  "matching": {
+    "strategy": "center_distance",
+    "threshold_m": 2.0,
+    "comparison": "distance <= threshold",
+    "class_aware": true,
+    "one_to_one": true
+  },
+  "sections": {}
+}

@@ -39,6 +39,23 @@ from .sparsity import (
     fit_sparsity_calibrator,
     search_sparsity_calibrators,
 )
+from .fusion import (
+    Association,
+    FUSION_SCHEMA_VERSION,
+    FusionConfig,
+    FusionDiagnostics,
+    analyze_complementarity,
+    associate_predictions,
+    fuse_predictions,
+    fuse_prediction_batches,
+    late_fuse,
+    late_fuse_predictions,
+    load_frozen_config,
+    naive_union,
+    save_frozen_config,
+    fusion_recall_metrics,
+    search_fusion_configs,
+)
 
 __all__ = [
     "BootstrapInterval",
@@ -73,4 +90,19 @@ __all__ = [
     "scene_level_bootstrap",
     "search_calibrators",
     "search_sparsity_calibrators",
+    "Association",
+    "FUSION_SCHEMA_VERSION",
+    "FusionConfig",
+    "FusionDiagnostics",
+    "analyze_complementarity",
+    "associate_predictions",
+    "fuse_predictions",
+    "fuse_prediction_batches",
+    "late_fuse",
+    "late_fuse_predictions",
+    "load_frozen_config",
+    "naive_union",
+    "save_frozen_config",
+    "fusion_recall_metrics",
+    "search_fusion_configs",
 ]

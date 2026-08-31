@@ -1,0 +1,11 @@
+{
+  "association_threshold_m": 1.0,
+  "centerpoint_weight": 1.0,
+  "voxelnext_weight": 1.0,
+  "score_rule": "probabilistic_or",
+  "geometry_policy": "winner_take_all",
+  "candidate_floor": 0.1,
+  "max_boxes": 500,
+  "schema_version": "lidar_perception.e3_late_fusion.v1",
+  "status": "not_frozen_blocked_missing_voxelnext_caches"
+}

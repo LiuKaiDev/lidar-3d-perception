@@ -1,0 +1,8 @@
+{
+  "status": "BLOCKED",
+  "fusion_overhead": "not measured in this cache-only implementation turn",
+  "centerpoint_reference_ms": 70.24,
+  "voxelnext_reference_ms": 111.69,
+  "dual_detector_e2e": "not measured; detector references are retained only with existing Phase 5 provenance",
+  "peak_vram": "not measured"
+}

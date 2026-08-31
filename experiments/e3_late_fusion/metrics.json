@@ -1,0 +1,6 @@
+{
+  "status": "BLOCKED",
+  "reason": "No compatible VoxelNeXt prediction caches; final mini_val was not evaluated and no result classification is claimed.",
+  "primary_metrics": ["recall_50m_plus", "recall_0_5_points"],
+  "comparisons": {}
+}

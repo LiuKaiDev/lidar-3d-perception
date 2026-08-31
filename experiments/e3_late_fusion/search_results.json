@@ -1,0 +1,10 @@
+{
+  "status": "blocked",
+  "reason": "VoxelNeXt mini_train and mini_val prediction caches are not present; no GPU inference or tuning was performed.",
+  "search_space": {
+    "association_threshold_m": [0.5, 1.0, 1.5, 2.0],
+    "centerpoint_weight": [0.8, 1.0, 1.2],
+    "voxelnext_weight": [1.0]
+  },
+  "configurations": []
+}
