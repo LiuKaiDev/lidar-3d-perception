@@ -1,0 +1,20 @@
+{
+  "experiment_id": "E2",
+  "runtime": {
+    "additional_gpu_ms": 0.0,
+    "estimated_additional_e2e_percent": 274.5471794606026,
+    "estimated_e2e_with_e2_ms": 263.07085595821263,
+    "iterations": 20,
+    "method": "time.perf_counter on five deterministic preloaded mini_val samples",
+    "note": "raw LiDAR I/O excluded; estimate adds isolated current-keyframe feature/policy CPU cost to frozen Phase 5 E2E mean",
+    "peak_python_allocation_bytes_one_sample": 1529748,
+    "phase5_centerpoint_e2e_reference_ms": 70.23704098828603,
+    "point_counting_cpu_ms_per_sample": 185.6038273597369,
+    "policy_cpu_ms_per_sample": 5.579974969732575,
+    "sample_count_per_iteration": 5,
+    "total_e2_cpu_ms_per_sample": 192.8338149699266,
+    "total_e2_cpu_us_per_box": 1045.7365236980836,
+    "warmup": 5
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,28 @@
+{
+  "cpu": "x86_64",
+  "cpu_model": "Intel(R) Core(TM) i5-8300H CPU @ 2.30GHz",
+  "cuda_available": true,
+  "dependency_checks": {
+    "nuscenes": {
+      "available": true,
+      "version": null
+    },
+    "pcdet": {
+      "available": true,
+      "version": "0.6.0+233f849+py8dbf10d"
+    },
+    "spconv": {
+      "available": true,
+      "version": "2.3.8"
+    }
+  },
+  "gpu": "NVIDIA GeForce RTX 2060",
+  "gpu_count": 1,
+  "openpcdet_revision": "233f849829b6ac19afb8af8837a0246890908755",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "project_revision": "8dbf10d41fd0380822422f5b8412d8a712e0f1d0",
+  "python": "3.12.3",
+  "torch": "2.5.1+cu124",
+  "torch_cuda": "12.4"
+}

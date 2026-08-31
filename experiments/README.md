@@ -8,7 +8,7 @@ Negative results remain in this index and are not deleted.
 |---|---|---|---|---|
 | E0 | Frozen baseline protocol | PASS | Existing verified records | Existing `mini_val` records |
 | E1 | Predicted-range-aware calibration | NEGATIVE | `mini_train` only | Frozen settings on `mini_val` |
-| E2 | Predicted-box sparsity-aware policy | PLANNED | `mini_train` only | Frozen settings on `mini_val` |
+| E2 | Predicted-box sparsity-aware policy | PASS | `mini_train` only | Frozen settings on `mini_val` |
 | E3 | CenterPoint + VoxelNeXt late fusion | PLANNED | `mini_train` only | Frozen settings on `mini_val` |
 | E4 | Repeat validation and final ablation | PLANNED | No new `mini_val` tuning | `mini_val` repeat/report |
 

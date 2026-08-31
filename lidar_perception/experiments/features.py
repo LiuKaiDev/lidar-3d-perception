@@ -22,7 +22,20 @@ class PredictedBoxFeatures:
     point_source: str
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        value = asdict(self)
+        feature_name = (
+            "predicted_box_keyframe_point_count"
+            if self.point_source == "current_keyframe"
+            else "predicted_box_multi_sweep_point_count"
+        )
+        value[feature_name] = self.point_count
+        return value
+
+    @property
+    def predicted_box_keyframe_point_count(self) -> int:
+        if self.point_source != "current_keyframe":
+            raise ValueError("feature was not computed from current-keyframe points")
+        return self.point_count
 
 
 def predicted_box_range_m(box: Box3D) -> float:
@@ -46,6 +59,16 @@ def _select_points(points: np.ndarray, point_source: str) -> np.ndarray:
     return np.asarray(array[:, :3], dtype=np.float64)
 
 
+def _count_points_in_predicted_box(points: np.ndarray, box: Box3D, tolerance: float = 1e-6) -> int:
+    """Apply an exact AABB prefilter before the shared oriented-box test."""
+
+    corners = box.corners
+    lower = np.min(corners, axis=0) - tolerance
+    upper = np.max(corners, axis=0) + tolerance
+    candidates = points[np.all((points >= lower) & (points <= upper), axis=1)]
+    return count_points_in_box(candidates, box, tolerance=tolerance)
+
+
 def extract_prediction_features(
     prediction: PredictionBatch,
     sensor_points: np.ndarray,
@@ -61,16 +84,27 @@ def extract_prediction_features(
         PredictedBoxFeatures(
             prediction_index=index,
             range_m=predicted_box_range_m(box),
-            point_count=count_points_in_box(xyz, box),
+            point_count=_count_points_in_predicted_box(xyz, box),
             point_source=point_source,
         )
         for index, box in enumerate(prediction.boxes)
     ]
 
 
+def predicted_box_keyframe_point_counts(
+    prediction: PredictionBatch,
+    sensor_points: np.ndarray,
+) -> np.ndarray:
+    """Return inference-time current-keyframe counts aligned to predictions."""
+
+    features = extract_prediction_features(prediction, sensor_points, point_source="current_keyframe")
+    return np.asarray([feature.predicted_box_keyframe_point_count for feature in features], dtype=np.int64)
+
+
 __all__ = [
     "POINT_SOURCES",
     "PredictedBoxFeatures",
     "extract_prediction_features",
+    "predicted_box_keyframe_point_counts",
     "predicted_box_range_m",
 ]

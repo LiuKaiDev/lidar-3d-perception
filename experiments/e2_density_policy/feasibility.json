@@ -1,0 +1,193 @@
+{
+  "correlations": {
+    "log1p_point_count_vs_predicted_range": -0.4265281929875091,
+    "log1p_point_count_vs_raw_confidence": 0.407836928684404,
+    "matched_log1p_point_count_vs_localization_error": -0.23279330810337068
+  },
+  "feature_definition": "current-keyframe points inside predicted oriented Box3D; inference-only geometry",
+  "fp_count": 43132,
+  "label_definition": "mini_train evaluation-only class-aware greedy center-distance TP/FP at <=2.0m",
+  "manual_real_prediction_inspection": [
+    {
+      "class": "car",
+      "fit_label": 0,
+      "localization_error_m": null,
+      "match_state": "FP",
+      "predicted_box_keyframe_point_count": 0,
+      "predicted_center": [
+        -3.5393943786621094,
+        39.608524322509766,
+        0.41734111309051514
+      ],
+      "predicted_range_m": 39.76634898472014,
+      "predicted_size": [
+        4.503421783447266,
+        1.890933871269226,
+        1.6190824508666992
+      ],
+      "predicted_yaw": -2.7706406116485596,
+      "prediction_index": 14,
+      "raw_score": 0.1496746987104416,
+      "sample_token": "ca9a282c9e77460f8360f564131a8af5",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198"
+    },
+    {
+      "class": "car",
+      "fit_label": 1,
+      "localization_error_m": 0.08388001425605844,
+      "match_state": "TP",
+      "predicted_box_keyframe_point_count": 5,
+      "predicted_center": [
+        3.298370361328125,
+        40.4243278503418,
+        0.20640240609645844
+      ],
+      "predicted_range_m": 40.558667744298596,
+      "predicted_size": [
+        4.48983907699585,
+        1.8496227264404297,
+        1.6128865480422974
+      ],
+      "predicted_yaw": 1.475343942642212,
+      "prediction_index": 2,
+      "raw_score": 0.5102314949035645,
+      "sample_token": "ca9a282c9e77460f8360f564131a8af5",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198"
+    },
+    {
+      "class": "car",
+      "fit_label": 0,
+      "localization_error_m": null,
+      "match_state": "FP",
+      "predicted_box_keyframe_point_count": 2,
+      "predicted_center": [
+        -6.698360443115234,
+        -38.0637321472168,
+        -2.2564690113067627
+      ],
+      "predicted_range_m": 38.648618831737785,
+      "predicted_size": [
+        4.513289451599121,
+        1.895187497138977,
+        1.6579010486602783
+      ],
+      "predicted_yaw": 1.04925537109375,
+      "prediction_index": 6,
+      "raw_score": 0.25810807943344116,
+      "sample_token": "ca9a282c9e77460f8360f564131a8af5",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198"
+    },
+    {
+      "class": "car",
+      "fit_label": 1,
+      "localization_error_m": 0.04824053958304192,
+      "match_state": "TP",
+      "predicted_box_keyframe_point_count": 51,
+      "predicted_center": [
+        9.19024658203125,
+        -19.566055297851562,
+        -1.8812739849090576
+      ],
+      "predicted_range_m": 21.616918192867416,
+      "predicted_size": [
+        4.4311933517456055,
+        1.8969827890396118,
+        1.6686742305755615
+      ],
+      "predicted_yaw": -1.658780813217163,
+      "prediction_index": 0,
+      "raw_score": 0.7597656846046448,
+      "sample_token": "ca9a282c9e77460f8360f564131a8af5",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198"
+    },
+    {
+      "class": "trailer",
+      "fit_label": 0,
+      "localization_error_m": null,
+      "match_state": "FP",
+      "predicted_box_keyframe_point_count": 64,
+      "predicted_center": [
+        -9.195812225341797,
+        -30.791757583618164,
+        -1.0168650150299072
+      ],
+      "predicted_range_m": 32.13557682027899,
+      "predicted_size": [
+        12.692646980285645,
+        2.873384952545166,
+        4.047696590423584
+      ],
+      "predicted_yaw": -1.5244611501693726,
+      "prediction_index": 71,
+      "raw_score": 0.10906609892845154,
+      "sample_token": "ca9a282c9e77460f8360f564131a8af5",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198"
+    }
+  ],
+  "point_count_fp": {
+    "max": 9503.0,
+    "median": 2.0,
+    "min": 0.0,
+    "q25": 1.0,
+    "q75": 5.0,
+    "q90": 13.0
+  },
+  "point_count_tp": {
+    "max": 10056.0,
+    "median": 6.0,
+    "min": 0.0,
+    "q25": 2.0,
+    "q75": 27.0,
+    "q90": 112.39999999999964
+  },
+  "predicted_point_count_bins": [
+    {
+      "mean_raw_confidence": 0.21893147068025182,
+      "median_predicted_range_m": 34.37591849270697,
+      "predicted_point_count_bin": "0-5",
+      "prediction_count": 38118,
+      "proportion": 0.7150387364234932,
+      "tp_count": 4857,
+      "tp_rate": 0.12742011648040297
+    },
+    {
+      "mean_raw_confidence": 0.2972440360590647,
+      "median_predicted_range_m": 24.602349206914262,
+      "predicted_point_count_bin": "6-10",
+      "prediction_count": 5838,
+      "proportion": 0.10951246506218462,
+      "tp_count": 1375,
+      "tp_rate": 0.2355258650222679
+    },
+    {
+      "mean_raw_confidence": 0.3188468052695871,
+      "median_predicted_range_m": 20.48411174343974,
+      "predicted_point_count_bin": "11-20",
+      "prediction_count": 3674,
+      "proportion": 0.06891894426832242,
+      "tp_count": 1035,
+      "tp_rate": 0.28170930865541643
+    },
+    {
+      "mean_raw_confidence": 0.4025927073482638,
+      "median_predicted_range_m": 16.503969356822264,
+      "predicted_point_count_bin": "21-50",
+      "prediction_count": 2996,
+      "proportion": 0.05620064154270386,
+      "tp_count": 1279,
+      "tp_rate": 0.42690253671562084
+    },
+    {
+      "mean_raw_confidence": 0.5427339567795557,
+      "median_predicted_range_m": 11.466674686871006,
+      "predicted_point_count_bin": "51+",
+      "prediction_count": 2683,
+      "proportion": 0.05032921270329588,
+      "tp_count": 1631,
+      "tp_rate": 0.6079016026835632
+    }
+  ],
+  "prediction_count": 53309,
+  "split": "mini_train",
+  "tp_count": 10177
+}

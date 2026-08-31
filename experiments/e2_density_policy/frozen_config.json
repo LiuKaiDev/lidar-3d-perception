@@ -1,0 +1,27 @@
+{
+  "frozen": true,
+  "frozen_before_split": "mini_val",
+  "membership_change": false,
+  "operating_path": "A",
+  "score_only_control_parameters": {
+    "family": "score_only",
+    "intercept": 0.3031511541637134,
+    "range_center_m": 25.0,
+    "range_scale_m": 25.0,
+    "range_weight": 0.0,
+    "ridge": 10.0,
+    "schema_version": "lidar_perception.e1_calibration.v1",
+    "score_weight": 2.267615648477387
+  },
+  "search_log": "search_results.json",
+  "selected_parameters": {
+    "family": "score_sparsity",
+    "intercept": 0.27861929803709024,
+    "point_count_source": "current_keyframe",
+    "point_count_transform": "log1p",
+    "ridge": 10.0,
+    "schema_version": "lidar_perception.e2_sparsity_calibration.v1",
+    "score_weight": 2.261841372437958,
+    "sparsity_weight": 0.013656169357129648
+  }
+}

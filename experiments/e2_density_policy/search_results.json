@@ -1,0 +1,244 @@
+{
+  "configs": [
+    {
+      "configuration_id": "score_only_01",
+      "family": "score_only",
+      "fold_count": 8,
+      "membership_invariant": true,
+      "mini_train_custom_metrics": {
+        "fp_count": 43132,
+        "overall_custom_recall": 0.7309487897723191,
+        "precision": 0.19090585079442496,
+        "recall_0_5_points": 0.5742952699474438,
+        "recall_40_50m": 0.7224242424242424,
+        "recall_50m_plus": 0.20147161878065872
+      },
+      "parameters": {
+        "family": "score_only",
+        "intercept": 0.30885440156599986,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.0,
+        "ridge": 0.1,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.277030433477851
+      },
+      "reason": "valid but not selected",
+      "selected": false,
+      "training_metrics": {
+        "brier_score": 0.0580307184935977,
+        "log_loss": 0.21180058907344534
+      },
+      "valid": true,
+      "validation_metrics": {
+        "brier_score": 0.058845458281409704,
+        "log_loss": 0.21717120815294136
+      },
+      "validation_strategy": "leave-one-scene-out"
+    },
+    {
+      "configuration_id": "score_only_02",
+      "family": "score_only",
+      "fold_count": 8,
+      "membership_invariant": true,
+      "mini_train_custom_metrics": {
+        "fp_count": 43132,
+        "overall_custom_recall": 0.7309487897723191,
+        "precision": 0.19090585079442496,
+        "recall_0_5_points": 0.5742952699474438,
+        "recall_40_50m": 0.7224242424242424,
+        "recall_50m_plus": 0.20147161878065872
+      },
+      "parameters": {
+        "family": "score_only",
+        "intercept": 0.30833180682459693,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.0,
+        "ridge": 1.0,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.2761673988340934
+      },
+      "reason": "valid but not selected",
+      "selected": false,
+      "training_metrics": {
+        "brier_score": 0.05803095207556685,
+        "log_loss": 0.21180060933884773
+      },
+      "valid": true,
+      "validation_metrics": {
+        "brier_score": 0.05884631460126251,
+        "log_loss": 0.21716908647487
+      },
+      "validation_strategy": "leave-one-scene-out"
+    },
+    {
+      "configuration_id": "score_only_03",
+      "family": "score_only",
+      "fold_count": 8,
+      "membership_invariant": true,
+      "mini_train_custom_metrics": {
+        "fp_count": 43132,
+        "overall_custom_recall": 0.7309487897723191,
+        "precision": 0.19090585079442496,
+        "recall_0_5_points": 0.5742952699474438,
+        "recall_40_50m": 0.7224242424242424,
+        "recall_50m_plus": 0.20147161878065872
+      },
+      "parameters": {
+        "family": "score_only",
+        "intercept": 0.3031511541637134,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.0,
+        "ridge": 10.0,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.267615648477387
+      },
+      "reason": "selected score-only internal control",
+      "selected": false,
+      "training_metrics": {
+        "brier_score": 0.058033563229467885,
+        "log_loss": 0.2118026082666955
+      },
+      "valid": true,
+      "validation_metrics": {
+        "brier_score": 0.058855255690268234,
+        "log_loss": 0.2171510421909932
+      },
+      "validation_strategy": "leave-one-scene-out"
+    },
+    {
+      "configuration_id": "score_sparsity_01",
+      "family": "score_sparsity",
+      "fold_count": 8,
+      "membership_invariant": true,
+      "mini_train_custom_metrics": {
+        "fp_count": 43132,
+        "overall_custom_recall": 0.7309487897723191,
+        "precision": 0.19090585079442496,
+        "recall_0_5_points": 0.5742952699474438,
+        "recall_40_50m": 0.7224242424242424,
+        "recall_50m_plus": 0.20147161878065872
+      },
+      "parameters": {
+        "family": "score_sparsity",
+        "intercept": 0.28770506208290303,
+        "point_count_source": "current_keyframe",
+        "point_count_transform": "log1p",
+        "ridge": 0.1,
+        "schema_version": "lidar_perception.e2_sparsity_calibration.v1",
+        "score_weight": 2.2720283943843778,
+        "sparsity_weight": 0.011774335242752546
+      },
+      "reason": "valid but not selected",
+      "selected": false,
+      "training_metrics": {
+        "brier_score": 0.05804419935288686,
+        "log_loss": 0.21179426992378705
+      },
+      "valid": true,
+      "validation_metrics": {
+        "brier_score": 0.05952035419112421,
+        "log_loss": 0.22165294376321218
+      },
+      "validation_strategy": "leave-one-scene-out"
+    },
+    {
+      "configuration_id": "score_sparsity_02",
+      "family": "score_sparsity",
+      "fold_count": 8,
+      "membership_invariant": true,
+      "mini_train_custom_metrics": {
+        "fp_count": 43132,
+        "overall_custom_recall": 0.7309487897723191,
+        "precision": 0.19090585079442496,
+        "recall_0_5_points": 0.5742952699474438,
+        "recall_40_50m": 0.7224242424242424,
+        "recall_50m_plus": 0.20147161878065872
+      },
+      "parameters": {
+        "family": "score_sparsity",
+        "intercept": 0.2868719060298456,
+        "point_count_source": "current_keyframe",
+        "point_count_transform": "log1p",
+        "ridge": 1.0,
+        "schema_version": "lidar_perception.e2_sparsity_calibration.v1",
+        "score_weight": 2.2710941474013713,
+        "sparsity_weight": 0.011947133884571469
+      },
+      "reason": "valid but not selected",
+      "selected": false,
+      "training_metrics": {
+        "brier_score": 0.05804465400008939,
+        "log_loss": 0.211794291791271
+      },
+      "valid": true,
+      "validation_metrics": {
+        "brier_score": 0.05952172510710957,
+        "log_loss": 0.2216469805031685
+      },
+      "validation_strategy": "leave-one-scene-out"
+    },
+    {
+      "configuration_id": "score_sparsity_03",
+      "family": "score_sparsity",
+      "fold_count": 8,
+      "membership_invariant": true,
+      "mini_train_custom_metrics": {
+        "fp_count": 43132,
+        "overall_custom_recall": 0.7309487897723191,
+        "precision": 0.19090585079442496,
+        "recall_0_5_points": 0.5742952699474438,
+        "recall_40_50m": 0.7224242424242424,
+        "recall_50m_plus": 0.20147161878065872
+      },
+      "parameters": {
+        "family": "score_sparsity",
+        "intercept": 0.27861929803709024,
+        "point_count_source": "current_keyframe",
+        "point_count_transform": "log1p",
+        "ridge": 10.0,
+        "schema_version": "lidar_perception.e2_sparsity_calibration.v1",
+        "score_weight": 2.261841372437958,
+        "sparsity_weight": 0.013656169357129648
+      },
+      "reason": "selected by minimum leave-one-scene-out mini_train log loss",
+      "selected": true,
+      "training_metrics": {
+        "brier_score": 0.0580494879654952,
+        "log_loss": 0.21179644676433798
+      },
+      "valid": true,
+      "validation_metrics": {
+        "brier_score": 0.059535837189921316,
+        "log_loss": 0.2215917447053783
+      },
+      "validation_strategy": "leave-one-scene-out"
+    }
+  ],
+  "fit_split": "mini_train",
+  "operating_path": "A",
+  "schema_version": "lidar_perception.e2_search.v1",
+  "score_only_control_parameters": {
+    "family": "score_only",
+    "intercept": 0.3031511541637134,
+    "range_center_m": 25.0,
+    "range_scale_m": 25.0,
+    "range_weight": 0.0,
+    "ridge": 10.0,
+    "schema_version": "lidar_perception.e1_calibration.v1",
+    "score_weight": 2.267615648477387
+  },
+  "selected_parameters": {
+    "family": "score_sparsity",
+    "intercept": 0.27861929803709024,
+    "point_count_source": "current_keyframe",
+    "point_count_transform": "log1p",
+    "ridge": 10.0,
+    "schema_version": "lidar_perception.e2_sparsity_calibration.v1",
+    "score_weight": 2.261841372437958,
+    "sparsity_weight": 0.013656169357129648
+  },
+  "selection_rule": "minimum leave-one-scene-out mini_train log loss among score_sparsity configurations"
+}

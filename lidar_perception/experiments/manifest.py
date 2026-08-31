@@ -96,18 +96,25 @@ def validate_manifest(value: dict[str, Any]) -> None:
         raise ValueError("prediction_candidate_threshold must be in [0, 1]")
     if not value["score_filtering_policy"]:
         raise ValueError("score_filtering_policy is required")
-    if value["experiment_id"] == "E1":
+    if value["experiment_id"] in {"E1", "E2"}:
         if threshold != 0.1:
-            raise ValueError("E1 freezes prediction_candidate_threshold at 0.1")
+            raise ValueError(f"{value['experiment_id']} freezes prediction_candidate_threshold at 0.1")
         if len(models) != 1:
-            raise ValueError("E1 must use exactly one detector")
+            raise ValueError(f"{value['experiment_id']} must use exactly one detector")
         if str(models[0].get("name", "")).lower() != "centerpoint_pointpillar":
-            raise ValueError("E1 must use the CenterPoint-PointPillar detector")
+            raise ValueError(f"{value['experiment_id']} must use the CenterPoint-PointPillar detector")
         if models[0].get("sweeps") != 10:
-            raise ValueError("E1 freezes the detector input at 10 sweeps")
+            raise ValueError(f"{value['experiment_id']} freezes the detector input at 10 sweeps")
         tuning = value.get("tuning")
         if isinstance(tuning, dict) and tuning.get("mini_val_used_for_tuning") is not False:
-            raise ValueError("E1 tuning must be mini_train-only")
+            raise ValueError(f"{value['experiment_id']} tuning must be mini_train-only")
+    if value["experiment_id"] == "E2":
+        inference = _require_mapping(value.get("inference_policy"), "inference_policy")
+        if inference.get("point_count_source") != "current_keyframe":
+            raise ValueError("E2 freezes point_count_source as current_keyframe")
+        operating = _require_mapping(value.get("operating_policy"), "operating_policy")
+        if operating.get("path") != "A" or operating.get("membership_change") is not False:
+            raise ValueError("E2 freezes operating PATH A with invariant membership")
 
     matching = _require_mapping(value["matching"], "matching")
     frozen_matching = {

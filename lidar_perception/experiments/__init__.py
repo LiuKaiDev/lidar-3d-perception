@@ -23,7 +23,22 @@ from .calibration import (
     fit_logistic_calibrator,
     search_calibrators,
 )
-from .features import PredictedBoxFeatures, extract_prediction_features, predicted_box_range_m
+from .features import (
+    PredictedBoxFeatures,
+    extract_prediction_features,
+    predicted_box_keyframe_point_counts,
+    predicted_box_range_m,
+)
+from .sparsity import (
+    SPARSITY_SCHEMA_VERSION,
+    SparsityAwareCalibrator,
+    SparsityCalibrationParameters,
+    SparsitySearchRecord,
+    apply_sparsity_policy,
+    calibrate_prediction_with_point_counts,
+    fit_sparsity_calibrator,
+    search_sparsity_calibrators,
+)
 
 __all__ = [
     "BootstrapInterval",
@@ -38,15 +53,24 @@ __all__ = [
     "PredictionCacheProvenance",
     "RangeAwareCalibrator",
     "ScoreOnlyCalibrator",
+    "SPARSITY_SCHEMA_VERSION",
     "SceneMetricCounts",
     "SceneMetricRecord",
+    "SparsityAwareCalibrator",
+    "SparsityCalibrationParameters",
+    "SparsitySearchRecord",
+    "apply_sparsity_policy",
+    "calibrate_prediction_with_point_counts",
     "extract_prediction_features",
     "calibrate_prediction",
     "calibration_metrics",
     "fit_logistic_calibrator",
+    "fit_sparsity_calibrator",
     "group_scene_counts",
     "paired_scene_bootstrap",
     "predicted_box_range_m",
+    "predicted_box_keyframe_point_counts",
     "scene_level_bootstrap",
     "search_calibrators",
+    "search_sparsity_calibrators",
 ]

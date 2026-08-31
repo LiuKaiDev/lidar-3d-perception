@@ -1,0 +1,108 @@
+experiment_id: E2
+status: PASS
+hypothesis: Among exported CenterPoint predictions, current-keyframe LiDAR point support inside a predicted oriented 3D box provides reliability information beyond raw detector confidence; a low-capacity sparsity-aware calibration may improve detection ranking without modifying the detector.
+dataset:
+  name: nuscenes
+  version: v1.0-mini
+  split: mini_train
+  role: feasibility, fitting, leave-one-scene-out parameter selection, and diagnostics only; mini_val is frozen confirmation
+models:
+  - name: centerpoint_pointpillar
+    config: configs/detectors/centerpoint/nuscenes_mini.yaml
+    upstream_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_dyn_pp_centerpoint.yaml
+    config_sha256: 58b5b8b2e4303a4563b6635c7d9f75a41acc8714635914b4d2cfb95ba8e40fc0
+    checkpoint: ~/checkpoints/openpcdet/centerpoint_nuscenes_pp.pth
+    checkpoint_sha256: 955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a
+    sweeps: 10
+point_count_feature:
+  name: predicted_box_keyframe_point_count
+  point_source: current_keyframe
+  box_source: predicted_oriented_3d_box
+  coordinate_frame: project_lidar_frame
+  inclusion: shared inclusive point_in_box geometry
+  transform: log1p
+  multi_sweep_usage: diagnostic_only_not_selected
+policy:
+  family: global_logistic_score_plus_predicted_box_sparsity
+  mathematical_form: sigmoid(intercept + score_weight * logit(raw_score) + sparsity_weight * log1p(predicted_box_keyframe_point_count))
+  inference_features: [raw_prediction_score, predicted_box_keyframe_point_count]
+  parameter_count: 3
+  score_only_control: E1 logistic implementation without predicted-box point count
+tuning:
+  fit_split: mini_train
+  confirmation_split: mini_val
+  validation: deterministic leave-one-scene-out across 8 mini_train scenes
+  search_algorithm: deterministic Newton logistic fit with ridge values
+  ridge_values: [0.1, 1.0, 10.0]
+  objective: minimum out-of-fold mini_train log loss among score_plus_sparsity candidates
+  freeze_order: family and grid -> mini_train feasibility -> leave-one-scene-out search -> frozen_config.json -> mini_val
+  mini_val_used_for_tuning: false
+operating_policy:
+  path: A
+  downstream_threshold: null
+  prediction_budget: null
+  membership_change: false
+  rule: ranking and calibration only; all exported candidates remain present
+prediction_candidate_threshold: 0.1
+score_filtering_policy: fixed upstream OpenPCDet post-processing and project candidate export threshold 0.1; candidates below 0.1 are unavailable
+matching:
+  strategy: center_distance
+  class_aware: true
+  one_to_one: true
+  threshold_m: 2.0
+  comparison: distance <= threshold
+distance_bins:
+  - {name: 0-10m, lower: 0.0, upper: 10.0}
+  - {name: 10-20m, lower: 10.0, upper: 20.0}
+  - {name: 20-30m, lower: 20.0, upper: 30.0}
+  - {name: 30-40m, lower: 30.0, upper: 40.0}
+  - {name: 40-50m, lower: 40.0, upper: 50.0}
+  - {name: 50m+, lower: 50.0, upper: .inf}
+density_bins:
+  - {name: 0-5, lower: 0.0, upper: 6.0}
+  - {name: 6-10, lower: 6.0, upper: 11.0}
+  - {name: 11-20, lower: 11.0, upper: 21.0}
+  - {name: 21-50, lower: 21.0, upper: 51.0}
+  - {name: 51+, lower: 51.0, upper: .inf}
+target_metrics: [recall_50m_plus, recall_0_5_points]
+secondary_metrics:
+  - recall_40_50m
+  - overall_custom_recall
+  - precision
+  - fp_count
+  - matched_localization_error_m
+  - average_matched_confidence
+  - per_class_distance_recall
+  - per_class_density_recall
+official_metrics: [mAP, NDS, mATE, mASE, mAOE, mAVE, mAAE]
+bootstrap:
+  resampling_unit: scene
+  repetitions: 1000
+  seed: 42
+  confidence_level: 0.95
+  paired_comparison: true
+tunable_parameters:
+  calibration_ridge: [0.1, 1.0, 10.0]
+controlled_variables:
+  dataset_version: v1.0-mini
+  detector_count: 1
+  detector: CenterPoint-PointPillar
+  matching_threshold_m: 2.0
+  density_evaluation_source: current keyframe points inside oriented GT boxes
+  official_evaluator: detection_cvpr_2019
+  candidate_threshold: 0.1
+  architecture_or_weights_change: none
+  range_feature_in_primary_policy: false
+  class_specific_parameters: false
+runtime_protocol:
+  batch_size: 1
+  precision: FP32
+  warmup: 5
+  iterations: 20
+  timing_method: time.perf_counter for current-keyframe point counting and CPU calibration; Phase 5 detector benchmark not rerun
+inference_policy:
+  ground_truth_at_inference: false
+  point_count_source: current_keyframe
+  fit_time_labels: mini_train class-aware center-distance TP/FP labels
+  allowed_features: [predicted_boxes, predicted_scores, sensor_points, predicted_box_keyframe_point_count]
+  forbidden_features: [gt_box, gt_distance, gt_point_count, gt_class, localization_error, match_state, predicted_range]
