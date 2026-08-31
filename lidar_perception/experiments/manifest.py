@@ -96,6 +96,18 @@ def validate_manifest(value: dict[str, Any]) -> None:
         raise ValueError("prediction_candidate_threshold must be in [0, 1]")
     if not value["score_filtering_policy"]:
         raise ValueError("score_filtering_policy is required")
+    if value["experiment_id"] == "E1":
+        if threshold != 0.1:
+            raise ValueError("E1 freezes prediction_candidate_threshold at 0.1")
+        if len(models) != 1:
+            raise ValueError("E1 must use exactly one detector")
+        if str(models[0].get("name", "")).lower() != "centerpoint_pointpillar":
+            raise ValueError("E1 must use the CenterPoint-PointPillar detector")
+        if models[0].get("sweeps") != 10:
+            raise ValueError("E1 freezes the detector input at 10 sweeps")
+        tuning = value.get("tuning")
+        if isinstance(tuning, dict) and tuning.get("mini_val_used_for_tuning") is not False:
+            raise ValueError("E1 tuning must be mini_train-only")
 
     matching = _require_mapping(value["matching"], "matching")
     frozen_matching = {

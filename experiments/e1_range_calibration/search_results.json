@@ -1,0 +1,153 @@
+{
+  "configs": [
+    {
+      "configuration_id": "score_only_01",
+      "family": "score_only",
+      "metrics": {
+        "brier_score": 0.0580307184935977,
+        "log_loss": 0.21180058907344534
+      },
+      "parameters": {
+        "family": "score_only",
+        "intercept": 0.30885440156599986,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.0,
+        "ridge": 0.1,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.277030433477851
+      },
+      "reason": "score-only internal control",
+      "selected": false,
+      "valid": true
+    },
+    {
+      "configuration_id": "score_only_02",
+      "family": "score_only",
+      "metrics": {
+        "brier_score": 0.05803095207556685,
+        "log_loss": 0.21180060933884773
+      },
+      "parameters": {
+        "family": "score_only",
+        "intercept": 0.30833180682459693,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.0,
+        "ridge": 1.0,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.2761673988340934
+      },
+      "reason": "score-only internal control",
+      "selected": false,
+      "valid": true
+    },
+    {
+      "configuration_id": "score_only_03",
+      "family": "score_only",
+      "metrics": {
+        "brier_score": 0.058033563229467885,
+        "log_loss": 0.2118026082666955
+      },
+      "parameters": {
+        "family": "score_only",
+        "intercept": 0.3031511541637134,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.0,
+        "ridge": 10.0,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.267615648477387
+      },
+      "reason": "score-only internal control",
+      "selected": false,
+      "valid": true
+    },
+    {
+      "configuration_id": "score_range_01",
+      "family": "score_range",
+      "metrics": {
+        "brier_score": 0.05756507835897017,
+        "log_loss": 0.2109576037384344
+      },
+      "parameters": {
+        "family": "score_range",
+        "intercept": 0.26424173405363943,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.3104201039355852,
+        "ridge": 0.1,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.319650214655992
+      },
+      "reason": "selected by minimum mini_train log loss",
+      "selected": true,
+      "valid": true
+    },
+    {
+      "configuration_id": "score_range_02",
+      "family": "score_range",
+      "metrics": {
+        "brier_score": 0.05756581560479257,
+        "log_loss": 0.21095762951196861
+      },
+      "parameters": {
+        "family": "score_range",
+        "intercept": 0.2638144729526394,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.3097446032361401,
+        "ridge": 1.0,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.3186629695556804
+      },
+      "reason": "valid but not selected",
+      "selected": false,
+      "valid": true
+    },
+    {
+      "configuration_id": "score_range_03",
+      "family": "score_range",
+      "metrics": {
+        "brier_score": 0.05757347991106621,
+        "log_loss": 0.2109601606912133
+      },
+      "parameters": {
+        "family": "score_range",
+        "intercept": 0.25957197283610095,
+        "range_center_m": 25.0,
+        "range_scale_m": 25.0,
+        "range_weight": 0.3031096537072817,
+        "ridge": 10.0,
+        "schema_version": "lidar_perception.e1_calibration.v1",
+        "score_weight": 2.3088995256902582
+      },
+      "reason": "valid but not selected",
+      "selected": false,
+      "valid": true
+    }
+  ],
+  "fit_split": "mini_train",
+  "schema_version": "lidar_perception.e1_search.v1",
+  "score_only_control_parameters": {
+    "family": "score_only",
+    "intercept": 0.30885440156599986,
+    "range_center_m": 25.0,
+    "range_scale_m": 25.0,
+    "range_weight": 0.0,
+    "ridge": 0.1,
+    "schema_version": "lidar_perception.e1_calibration.v1",
+    "score_weight": 2.277030433477851
+  },
+  "selected_parameters": {
+    "family": "score_range",
+    "intercept": 0.26424173405363943,
+    "range_center_m": 25.0,
+    "range_scale_m": 25.0,
+    "range_weight": 0.3104201039355852,
+    "ridge": 0.1,
+    "schema_version": "lidar_perception.e1_calibration.v1",
+    "score_weight": 2.319650214655992
+  },
+  "selection_rule": "minimum mini_train log loss among score_range configurations"
+}

@@ -1,0 +1,21 @@
+{
+  "experiment_id": "E1",
+  "runtime": {
+    "additional_gpu_ms": 0.0,
+    "boxes_per_iteration": 16412,
+    "calibration_cpu_ms_per_sample": 5.172821960741091,
+    "calibration_cpu_us_per_box": 25.530013332928853,
+    "e2e_note": "estimate adds isolated CPU calibration to the frozen Phase 5 mean; detector GPU benchmark was not rerun",
+    "estimated_additional_e2e_percent": 7.364806216144275,
+    "estimated_e2e_with_calibration_ms": 75.40986294902712,
+    "iterations": 100,
+    "memory_overhead": "one copied PredictionBatch per application; no detector GPU memory change",
+    "method": "time.perf_counter",
+    "peak_python_allocation_bytes_one_sample": 121997,
+    "phase5_centerpoint_e2e_reference_ms": 70.23704098828603,
+    "samples_per_iteration": 81,
+    "total_seconds": 41.899857882002834,
+    "warmup": 20
+  },
+  "status": "PASS"
+}

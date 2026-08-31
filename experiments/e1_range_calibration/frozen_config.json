@@ -1,0 +1,15 @@
+{
+  "frozen": true,
+  "frozen_before_split": "mini_val",
+  "search_log": "search_results.json",
+  "selected_parameters": {
+    "family": "score_range",
+    "intercept": 0.26424173405363943,
+    "range_center_m": 25.0,
+    "range_scale_m": 25.0,
+    "range_weight": 0.3104201039355852,
+    "ridge": 0.1,
+    "schema_version": "lidar_perception.e1_calibration.v1",
+    "score_weight": 2.319650214655992
+  }
+}

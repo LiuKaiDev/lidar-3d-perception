@@ -1,0 +1,110 @@
+experiment_id: E1
+status: NEGATIVE
+hypothesis: Raw CenterPoint confidence is not equally informative across target range; a low-capacity calibration using predicted range may improve far-range ranking without changing the pretrained detector.
+dataset:
+  name: nuscenes
+  version: v1.0-mini
+  split: mini_train
+  role: fitting, parameter search, and diagnostics only; mini_val is frozen confirmation
+models:
+  - name: centerpoint_pointpillar
+    config: configs/detectors/centerpoint/nuscenes_mini.yaml
+    upstream_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_dyn_pp_centerpoint.yaml
+    config_sha256: 58b5b8b2e4303a4563b6635c7d9f75a41acc8714635914b4d2cfb95ba8e40fc0
+    checkpoint: ~/checkpoints/openpcdet/centerpoint_nuscenes_pp.pth
+    checkpoint_sha256: 955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a
+    sweeps: 10
+calibration:
+  family: global_logistic_score_plus_predicted_range
+  mathematical_form: sigmoid(intercept + score_weight * logit(raw_score) + range_weight * ((sqrt(x^2+y^2)-25)/25))
+  inference_features: [raw_prediction_score, predicted_box_range_sqrt_x2_y2]
+  parameter_count: 3
+  fixed_range_center_m: 25.0
+  fixed_range_scale_m: 25.0
+  score_only_control: same_logistic_family_without_range_feature
+tuning:
+  fit_split: mini_train
+  confirmation_split: mini_val
+  search_algorithm: deterministic Newton logistic fit with ridge values
+  ridge_values: [0.1, 1.0, 10.0]
+  objective: minimum mini_train log loss among score_plus_range candidates
+  freeze_order: design family and grid -> fit mini_train -> freeze frozen_config.json -> evaluate mini_val
+  mini_val_used_for_tuning: false
+final_frozen_parameters:
+  selected_configuration_id: score_range_01
+  family: score_range
+  intercept: 0.26424173405363943
+  score_weight: 2.319650214655992
+  range_weight: 0.3104201039355852
+  range_center_m: 25.0
+  range_scale_m: 25.0
+  ridge: 0.1
+  frozen_before_split: mini_val
+  evidence: frozen_config.json
+selection:
+  downstream_threshold: null
+  max_boxes_per_sample: null
+  operating_point_rule: no downstream operating point exists; all exported candidates are evaluated and calibration changes ranking only
+prediction_candidate_threshold: 0.1
+score_filtering_policy: fixed upstream OpenPCDet post-processing and project candidate export threshold 0.1; candidates below 0.1 are unavailable
+matching:
+  strategy: center_distance
+  class_aware: true
+  one_to_one: true
+  threshold_m: 2.0
+  comparison: distance <= threshold
+distance_bins:
+  - {name: 0-10m, lower: 0.0, upper: 10.0}
+  - {name: 10-20m, lower: 10.0, upper: 20.0}
+  - {name: 20-30m, lower: 20.0, upper: 30.0}
+  - {name: 30-40m, lower: 30.0, upper: 40.0}
+  - {name: 40-50m, lower: 40.0, upper: 50.0}
+  - {name: 50m+, lower: 50.0, upper: .inf}
+density_bins:
+  - {name: 0-5, lower: 0.0, upper: 6.0}
+  - {name: 6-10, lower: 6.0, upper: 11.0}
+  - {name: 11-20, lower: 11.0, upper: 21.0}
+  - {name: 21-50, lower: 21.0, upper: 51.0}
+  - {name: 51+, lower: 51.0, upper: .inf}
+target_metrics: [recall_50m_plus, recall_0_5_points]
+secondary_metrics:
+  - recall_40_50m
+  - overall_custom_recall
+  - precision
+  - fp_count
+  - matched_localization_error_m
+  - average_matched_confidence
+  - per_class_distance_recall
+  - per_class_density_recall
+official_metrics: [mAP, NDS, mATE, mASE, mAOE, mAVE, mAAE]
+bootstrap:
+  resampling_unit: scene
+  repetitions: 1000
+  seed: 42
+  confidence_level: 0.95
+  paired_comparison: true
+tunable_parameters:
+  calibration_ridge: [0.1, 1.0, 10.0]
+  range_center_m: 25.0
+  range_scale_m: 25.0
+controlled_variables:
+  dataset_version: v1.0-mini
+  detector_count: 1
+  detector: CenterPoint-PointPillar
+  matching_threshold_m: 2.0
+  density_evaluation_source: current keyframe points inside oriented GT boxes
+  official_evaluator: detection_cvpr_2019
+  candidate_threshold: 0.1
+  architecture_or_weights_change: none
+  class_ranges_or_bins_change: none
+runtime_protocol:
+  batch_size: 1
+  precision: FP32
+  warmup: 20
+  iterations: 100
+  timing_method: time.perf_counter for project-owned CPU calibration; Phase 5 detector benchmark not rerun
+inference_policy:
+  ground_truth_at_inference: false
+  fit_time_labels: mini_train class-aware center-distance TP/FP labels
+  allowed_features: [predicted_boxes, predicted_scores, predicted_box_range]
+  forbidden_features: [gt_box, gt_distance, gt_point_count, gt_class, localization_error, match_state]
