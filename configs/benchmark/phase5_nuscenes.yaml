@@ -22,12 +22,11 @@ models:
     status: cached_accuracy
   - name: voxelnext
     config: configs/detectors/voxelnext/nuscenes_mini.yaml
-    status: checkpoint_required
+    status: available
     checkpoint_acquisition:
-      attempt_count: 1
-      attempted_at: "2026-08-31"
-      timeout_seconds: 60
-      result: timed_out_no_artifact
+      method: manual_official_model_zoo_download
+      supplied_at: "2026-08-31"
+      result: verified
   - name: pointpillar_nuscenes
     config: configs/detectors/pointpillar/nuscenes_mini.yaml
     status: checkpoint_required

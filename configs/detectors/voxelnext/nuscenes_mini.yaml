@@ -3,6 +3,7 @@ backend:
   model: voxelnext
   openpcdet_config: third_party/OpenPCDet/tools/cfgs/nuscenes_models/cbgs_voxel0075_voxelnext.yaml
   checkpoint: ~/checkpoints/openpcdet/voxelnext_nuscenes.pth
+  checkpoint_sha256: 9409dd8c13c8c8ca546c8c5af024856d03029e2def8d5fc0fa3bfe4477e7d88b
   checkpoint_source: https://drive.google.com/file/d/1IV7e7G9X-61KXSjMGtQo579pzDNbhwvf/view?usp=share_link
   device: cuda
   score_threshold: 0.1

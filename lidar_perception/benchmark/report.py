@@ -206,18 +206,41 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"**Comparable dataset:** {dataset['name']} {dataset['version']} / {dataset['split']}",
         f"**Accuracy protocol:** {dataset['protocol']}",
         "",
+        "## Main Comparison",
+        "",
+        "| Model | Input | mAP | NDS | Mean E2E (ms) | P95 E2E (ms) | FPS | Peak allocated / reserved (bytes) |",
+        "|---|---|---:|---:|---:|---:|---:|---|",
+    ]
+    for row in report["accuracy_comparison"]:
+        runtime = next((item for item in report["runtime_comparison"] if item["model"] == row["model"]), {})
+        timing = runtime.get("end_to_end") or {}
+        lines.append(
+            f"| {row['model']} | {row['input']} | {row['mAP']} | {row['NDS']} | "
+            f"{timing.get('mean_ms')} | {timing.get('p95_ms')} | {timing.get('fps_batch1')} | "
+            f"{runtime.get('end_to_end_peak_memory_allocated_bytes')} / "
+            f"{runtime.get('end_to_end_peak_memory_reserved_bytes')} |"
+        )
+    lines.extend([
+        "",
         "## Comparable Accuracy",
         "",
         "Only local results using the same dataset, split, and official protocol are listed here.",
         "",
         "| Model | Input | mAP | NDS | mATE | mASE | mAOE | mAVE | mAAE | Status |",
         "|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
-    ]
+    ])
     for row in report["accuracy_comparison"]:
         lines.append("| {model} | {input} | {mAP} | {NDS} | {mATE} | {mASE} | {mAOE} | {mAVE} | {mAAE} | {status} |".format(**row))
     if not report["accuracy_comparison"]:
         lines.append("| No comparable local results yet | | | | | | | | | BLOCKED |")
     lines.extend([
+        "",
+        "## Timing Scope",
+        "",
+        "- Raw LiDAR loading and 10-sweep assembly are excluded from both scopes; the same preloaded project frame is reused.",
+        "- Model-only starts from a prepared, device-resident batch and includes network forward, decode, and NMS. It excludes CPU point preprocessing, host-to-device transfer, and PredictionBatch conversion.",
+        "- End-to-end includes project-frame CPU preprocessing/voxelization, host-to-device transfer, network forward, decode/NMS, and PredictionBatch conversion.",
+        "- Dynamic pillarization is inside CenterPoint's network forward; VoxelNeXt's fixed voxelization is part of CPU preprocessing. This model-specific boundary is retained and exposed by both timing scopes.",
         "",
         "## Runtime",
         "",
@@ -241,8 +264,26 @@ def render_markdown(report: dict[str, Any]) -> str:
         provenance = model.get("provenance", {})
         lines.append(
             f"- **{model.get('name')}**: {model.get('status')}; config `{provenance.get('config')}`; "
-            f"checkpoint `{provenance.get('checkpoint')}`; sha256 `{provenance.get('checkpoint_sha256')}`."
+            f"checkpoint `{provenance.get('checkpoint')}`; sha256 `{provenance.get('checkpoint_sha256')}`; "
+            f"representation: {model.get('representation')}."
         )
+    complete = [model for model in report["models"] if model.get("accuracy") and model.get("benchmark")]
+    if len(complete) >= 2:
+        baseline, candidate = complete[:2]
+        baseline_e2e = baseline["benchmark"]["end_to_end"]
+        candidate_e2e = candidate["benchmark"]["end_to_end"]
+        baseline_model = baseline["benchmark"]["model_only"]
+        candidate_model = candidate["benchmark"]["model_only"]
+        lines.extend([
+            "",
+            "## Measured Trade-offs",
+            "",
+            f"- {candidate['name']} improves mini mAP by {candidate['accuracy']['mAP'] - baseline['accuracy']['mAP']:.4f} and NDS by {candidate['accuracy']['NDS'] - baseline['accuracy']['NDS']:.4f}.",
+            f"- {candidate['name']} model-only mean latency is {candidate_model['mean_ms'] - baseline_model['mean_ms']:.2f} ms higher; end-to-end mean latency is {candidate_e2e['mean_ms'] - baseline_e2e['mean_ms']:.2f} ms higher.",
+            f"- End-to-end preprocessing/transfer/schema overhead is {baseline_e2e['mean_ms'] - baseline_model['mean_ms']:.2f} ms for {baseline['name']} and {candidate_e2e['mean_ms'] - candidate_model['mean_ms']:.2f} ms for {candidate['name']}.",
+            f"- Peak end-to-end allocated VRAM is {baseline['benchmark']['end_to_end_peak_memory_allocated_bytes']} bytes for {baseline['name']} and {candidate['benchmark']['end_to_end_peak_memory_allocated_bytes']} bytes for {candidate['name']}.",
+            "- These mini results expose an accuracy, latency, and memory trade-off; they do not establish universal model superiority or far-range/low-density improvement.",
+        ])
     lines.extend(["", "## Historical Reference", ""])
     lines.append("KITTI AP_R40 results are intentionally kept separate and are not ranked with nuScenes mAP/NDS.")
     if report.get("historical_reference"):

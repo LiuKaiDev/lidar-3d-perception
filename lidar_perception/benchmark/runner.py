@@ -51,6 +51,42 @@ def load_cached_accuracy(
     }
 
 
+def evaluation_provenance(
+    spec: dict[str, Any],
+    dataset: dict[str, Any],
+    protocol: str | None,
+) -> dict[str, Any]:
+    """Build the identity required to reuse an official accuracy result."""
+
+    provenance = spec["provenance"]
+    return {
+        "model": spec["name"],
+        "dataset": dataset["name"],
+        "version": dataset["version"],
+        "split": dataset["split"],
+        "sweeps": spec["sweeps"],
+        "protocol": protocol,
+        "config_sha256": provenance["config_sha256"],
+        "openpcdet_config_sha256": provenance["openpcdet_config_sha256"],
+        "checkpoint_sha256": provenance["checkpoint_sha256"],
+    }
+
+
+def cache_provenance_matches(path: str | Path | None, expected: dict[str, Any]) -> bool:
+    """Require every current experiment identity field in a cache sidecar."""
+
+    if path is None:
+        return True
+    source = Path(path).expanduser()
+    if not source.is_file():
+        return False
+    try:
+        cached = json.loads(source.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return all(cached.get(key) == value for key, value in expected.items())
+
+
 def model_provenance(config: dict[str, Any], config_path: str | Path) -> dict[str, Any]:
     backend = config.get("backend", {})
     checkpoint = Path(str(backend.get("checkpoint", ""))).expanduser()
@@ -138,6 +174,8 @@ def run_sequential_benchmark(
 
 __all__ = [
     "benchmark_model",
+    "cache_provenance_matches",
+    "evaluation_provenance",
     "isolate_cuda",
     "load_cached_accuracy",
     "model_provenance",

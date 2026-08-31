@@ -4,15 +4,15 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 4 — Distance / Density Analysis (PASS)**
+**Phase 5 - Multi-Model Benchmark (PASS)**
 
 Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
 Phase 1 real KITTI geometry validation passed on frames `000000`, `004139`, and
 `007480`; Phase 2 covers the PointPillars detector boundary and KITTI
 evaluation. Phase 3 validated the pretrained nuScenes CenterPoint-PointPillar
-pipeline, and Phase 4 adds project-owned matching, stratified metrics,
-bad-case mining, and reproducible reports. Results are recorded in
-`outputs/phase2_pointpillar/` and `outputs/phase4_analysis/`.
+pipeline, Phase 4 adds project-owned matching and bad-case analysis, and Phase
+5 compares CenterPoint-PointPillar with VoxelNeXt under one official mini
+accuracy and RTX 2060 runtime protocol. Results are recorded under `outputs/`.
 
 ## Project Strategy
 
@@ -187,11 +187,20 @@ nuScenes candidates:
 - PointPillars MultiHead (optional): `configs/detectors/pointpillar/nuscenes_mini.yaml`
 
 The exact configs and official checkpoint sources come from the pinned
-OpenPCDet revision. Place matching, unmodified Model Zoo checkpoints at the
-paths in those wrappers; never reuse the KITTI PointPillars checkpoint for
-nuScenes. The current machine has the CenterPoint checkpoint at
-`~/checkpoints/openpcdet/centerpoint_nuscenes_pp.pth` with SHA-256
-`955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a`.
+OpenPCDet revision. The validated checkpoint hashes are:
+
+- CenterPoint: `955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a`
+- VoxelNeXt: `9409dd8c13c8c8ca546c8c5af024856d03029e2def8d5fc0fa3bfe4477e7d88b`
+
+Never reuse the KITTI PointPillars checkpoint for nuScenes.
+
+All comparable accuracy below is local `nuScenes v1.0-mini / mini_val`
+pipeline validation from the official devkit, not full train/val results:
+
+| Model | mAP | NDS | Mean E2E | P95 E2E | FPS | Peak allocated / reserved |
+|---|---:|---:|---:|---:|---:|---:|
+| CenterPoint-PointPillar | 0.4371 | 0.4919 | 70.24 ms | 77.62 ms | 14.24 | 286,804,992 / 446,693,376 B |
+| VoxelNeXt | 0.5218 | 0.5446 | 111.69 ms | 131.07 ms | 8.95 | 146,302,464 / 180,355,072 B |
 
 Run the sequential benchmark and report generation with the fixed protocol
 (batch 1, FP32, 20 warmups, 100 measured iterations, synchronized CUDA
@@ -202,9 +211,20 @@ PYTHONPATH=. .venv/bin/python tools/benchmark_phase5.py \
   --config configs/benchmark/phase5_nuscenes.yaml
 ```
 
-To assemble provenance and accuracy without running GPU timing, add
-`--skip-runtime`; to evaluate a newly available candidate with the official
-devkit, add `--evaluate-missing`. Reports are written to
+To reproduce VoxelNeXt accuracy from scratch:
+
+```bash
+PYTHONPATH=. .venv/bin/python tools/evaluate_nuscenes.py \
+  --config configs/detectors/voxelnext/nuscenes_mini.yaml \
+  --output-dir outputs/phase5_benchmark/voxelnext/evaluation
+```
+
+Raw file loading and multi-sweep assembly are outside both timing scopes.
+Model-only uses a prepared device-resident batch; end-to-end additionally
+includes CPU point preprocessing/voxelization, host-to-device transfer, and
+project schema conversion. Add `--skip-runtime` for report assembly only or
+`--evaluate-missing` when an official accuracy cache is absent or mismatched.
+Reports are written to
 `outputs/phase5_benchmark/` (`benchmark.json`, `accuracy.json`,
 `benchmark.csv`, `environment.json`, and `README.md`). The main table only
 contains local results from `nuScenes v1.0-mini / mini_val`; the historical

@@ -1,10 +1,19 @@
+import hashlib
 import json
 from pathlib import Path
 
 import numpy as np
+import torch
 
 from lidar_perception.benchmark.report import build_report, write_reports
-from lidar_perception.benchmark.runner import benchmark_model, load_cached_accuracy, model_provenance, run_sequential_benchmark
+from lidar_perception.benchmark.runner import (
+    benchmark_model,
+    cache_provenance_matches,
+    evaluation_provenance,
+    load_cached_accuracy,
+    model_provenance,
+    run_sequential_benchmark,
+)
 from lidar_perception.datasets.schemas import PointCloudFrame
 from lidar_perception.detection.openpcdet_backend import OpenPCDetBackend, VoxelNeXtBackend
 
@@ -72,12 +81,38 @@ def test_model_provenance_records_checkpoint_availability_and_classes(tmp_path: 
     checkpoint = tmp_path / "weights.pth"
     opcdet.write_text("CLASS_NAMES: [car, pedestrian]\n", encoding="utf-8")
     checkpoint.write_bytes(b"weights")
-    config = {"backend": {"model": "voxelnext", "openpcdet_config": str(opcdet), "checkpoint": str(checkpoint)}, "dataset": {"max_sweeps": 10}}
+    expected_hash = hashlib.sha256(b"weights").hexdigest()
+    config = {
+        "backend": {
+            "model": "voxelnext",
+            "openpcdet_config": str(opcdet),
+            "checkpoint": str(checkpoint),
+            "checkpoint_sha256": expected_hash,
+        },
+        "dataset": {"max_sweeps": 10},
+    }
     config_path.write_text("test", encoding="utf-8")
     provenance = model_provenance(config, config_path)
     assert provenance["checkpoint_available"] is True
     assert provenance["checkpoint_sha256"]
+    assert provenance["checkpoint_hash_matches_expected"] is True
     assert provenance["class_names"] == ["car", "pedestrian"]
+
+
+def test_voxelnext_native_prediction_uses_unified_box_schema() -> None:
+    backend = VoxelNeXtBackend(device="cpu", score_threshold=0.1)
+    backend.class_names = ["car"]
+    prediction = backend.native_prediction_to_batch(
+        "sample",
+        {
+            "pred_boxes": torch.tensor([[1, 2, 3, 4, 2, 1, 0.25, 5, -2]], dtype=torch.float32),
+            "pred_scores": torch.tensor([0.8], dtype=torch.float32),
+            "pred_labels": torch.tensor([1], dtype=torch.long),
+        },
+    )
+    assert prediction.boxes[0].size.tolist() == [4.0, 2.0, 1.0]
+    assert prediction.boxes[0].velocity.tolist() == [5.0, -2.0, 0.0]
+    assert prediction.metadata["native_box_convention"].endswith("[center,l,w,h,yaw]")
 
 
 def test_cached_accuracy_rejects_different_split(tmp_path: Path) -> None:
@@ -94,6 +129,23 @@ def test_cached_accuracy_rejects_different_split(tmp_path: Path) -> None:
     except ValueError:
         return
     raise AssertionError("expected a mismatched cached split to be rejected")
+
+
+def test_accuracy_cache_requires_matching_experiment_provenance(tmp_path: Path) -> None:
+    spec = {
+        "name": "voxelnext",
+        "sweeps": 10,
+        "provenance": {
+            "config_sha256": "config",
+            "openpcdet_config_sha256": "openpcdet",
+            "checkpoint_sha256": "checkpoint",
+        },
+    }
+    expected = evaluation_provenance(spec, _dataset(), "detection_cvpr_2019")
+    sidecar = tmp_path / "provenance.json"
+    sidecar.write_text(json.dumps(expected), encoding="utf-8")
+    assert cache_provenance_matches(sidecar, expected) is True
+    assert cache_provenance_matches(sidecar, {**expected, "sweeps": 1}) is False
 
 
 def test_sequential_runner_isolates_models_and_records_missing_checkpoint() -> None:

@@ -14,12 +14,15 @@ import torch
 from lidar_perception.benchmark.report import build_report, collect_environment, write_reports
 from lidar_perception.benchmark.runner import (
     benchmark_model,
+    cache_provenance_matches,
+    evaluation_provenance,
     load_cached_accuracy,
     model_provenance,
 )
 from lidar_perception.datasets.nuscenes_adapter import NuScenesAdapter, NuScenesError
 from lidar_perception.evaluation.nuscenes import evaluate_nuscenes, evaluation_sample_tokens
 from lidar_perception.utils.config import load_yaml_config
+from lidar_perception.utils.io import save_json
 
 from common import load_detector_config, make_backend
 
@@ -70,6 +73,13 @@ def _historical_reference() -> dict[str, Any] | None:
     }
 
 
+def _accuracy_cache_paths(spec: dict[str, Any], output_dir: Path) -> tuple[Path, Path | None]:
+    if spec["name"] == "centerpoint_pointpillar":
+        return Path("outputs/phase3_centerpoint/evaluation/summary.json"), None
+    evaluation_dir = output_dir / spec["name"] / "evaluation"
+    return evaluation_dir / "summary.json", evaluation_dir / "provenance.json"
+
+
 def main() -> int:
     args = build_parser().parse_args()
     benchmark_config = load_yaml_config(args.config)
@@ -116,15 +126,15 @@ def main() -> int:
         config = spec["config"]
         model_record = dict(spec)
         model_record["accuracy"] = None
-        if spec["name"] == "centerpoint_pointpillar":
-            cache_path = Path("outputs/phase3_centerpoint/evaluation/summary.json")
-            checksum_ok = spec["provenance"].get("checkpoint_hash_matches_expected") is True
-            if cache_path.is_file() and checksum_ok:
-                try:
-                    model_record["accuracy"] = load_cached_accuracy(cache_path, dataset=dataset)
-                    model_record["status"] = "cached_accuracy"
-                except (OSError, ValueError, json.JSONDecodeError):
-                    pass
+        cache_path, cache_provenance_path = _accuracy_cache_paths(spec, output_dir)
+        checksum_ok = spec["provenance"].get("checkpoint_hash_matches_expected") is True
+        expected_cache_provenance = evaluation_provenance(spec, dataset, "detection_cvpr_2019")
+        if cache_path.is_file() and checksum_ok and cache_provenance_matches(cache_provenance_path, expected_cache_provenance):
+            try:
+                model_record["accuracy"] = load_cached_accuracy(cache_path, dataset=dataset)
+                model_record["status"] = "cached_accuracy"
+            except (OSError, ValueError, json.JSONDecodeError):
+                pass
         checkpoint_available = bool(spec["provenance"]["checkpoint_available"])
         if args.evaluate_missing and checkpoint_available and model_record["accuracy"] is None:
             backend = make_backend(config, spec["opcdet_config_path"])
@@ -134,6 +144,11 @@ def main() -> int:
                 evaluation = evaluate_nuscenes(predictions, adapter, output_dir / spec["name"] / "evaluation", eval_set=dataset.get("split", "mini_val"))
                 model_record["accuracy"] = {"dataset": dataset["name"], "version": dataset["version"], "split": dataset["split"], **evaluation}
                 model_record["status"] = "accuracy_completed"
+                if cache_provenance_path is not None:
+                    save_json(
+                        evaluation_provenance(spec, dataset, evaluation.get("protocol")),
+                        cache_provenance_path,
+                    )
             except (FileNotFoundError, RuntimeError, ValueError, OSError) as exc:
                 model_record["error"] = f"{type(exc).__name__}: {exc}"
             finally:
@@ -165,6 +180,7 @@ def main() -> int:
     limitations = [
         "Current accuracy is nuScenes v1.0-mini pipeline validation, not full train/val.",
         "Runtime target is the local RTX 2060 6GB environment; no paper/model-zoo runtime numbers are used.",
+        "pip check retains pre-existing optional metadata gaps for typeguard, opencv-python-headless, and parameterized; validated runtime imports are unaffected.",
     ]
     blocked = [record for record in records if record["status"] == "blocked"]
     limitations.extend(f"{record['name']}: {record.get('error')}" for record in blocked)
