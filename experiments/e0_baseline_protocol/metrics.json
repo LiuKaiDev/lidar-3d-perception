@@ -1,0 +1,32 @@
+{
+  "experiment_id": "E0",
+  "label": "nuScenes v1.0-mini exploratory baseline record",
+  "official_mini_val": {
+    "centerpoint_pointpillar": {
+      "mAP": 0.4370867499749207,
+      "NDS": 0.49189721586856566,
+      "mATE": 0.44206885908133176,
+      "mASE": 0.456984968441946,
+      "mAOE": 0.5810618714431643,
+      "mAVE": 0.3849722396710507,
+      "mAAE": 0.40137365255145396
+    },
+    "voxelnext": {
+      "mAP": 0.5217660781749643,
+      "NDS": 0.5446246343558304,
+      "mATE": 0.4180080344879391,
+      "mASE": 0.4421983311455505,
+      "mAOE": 0.5425995126765636,
+      "mAVE": 0.3764804940294276,
+      "mAAE": 0.38329767497703704
+    }
+  },
+  "custom_mini_val": {
+    "centerpoint_pointpillar": {"recall_50m_plus": 0.14, "recall_0_5_points": 0.6329906124273581},
+    "voxelnext": {"status": "NOT_EVALUATED"}
+  },
+  "sources": [
+    "outputs/phase4_analysis/summary.json",
+    "outputs/phase5_benchmark/benchmark.json"
+  ]
+}

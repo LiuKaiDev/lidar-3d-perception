@@ -1,0 +1,8 @@
+Project baseline commit: fa4c2bcde42f157013bed57fff81849be0b87752
+OpenPCDet revision: 233f849829b6ac19afb8af8837a0246890908755
+GPU: NVIDIA GeForce RTX 2060 6GB
+Python: 3.12.3
+PyTorch: 2.5.1+cu124
+PyTorch CUDA: 12.4
+spconv: 2.3.8 (spconv-cu124)
+Source of truth: docs/environment.lock.md

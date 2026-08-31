@@ -1,0 +1,17 @@
+{
+  "experiment_id": "E0",
+  "protocol": {"gpu": "NVIDIA GeForce RTX 2060", "batch_size": 1, "precision": "FP32", "warmup": 20, "iterations": 100},
+  "centerpoint_pointpillar": {
+    "model_only": {"mean_ms": 59.761921348571775, "median_ms": 58.96286392211914, "p95_ms": 67.87139129638672, "fps": 16.733063084891906},
+    "end_to_end": {"mean_ms": 70.23704098828603, "median_ms": 68.94570250005927, "p95_ms": 77.62125800945796, "fps": 14.237501835630828},
+    "peak_allocated_bytes": 286804992,
+    "peak_reserved_bytes": 446693376
+  },
+  "voxelnext": {
+    "model_only": {"mean_ms": 84.78506126403809, "median_ms": 83.6191177368164, "p95_ms": 95.80703735351562, "fps": 11.794530605878725},
+    "end_to_end": {"mean_ms": 111.69214737979928, "median_ms": 108.34553351742215, "p95_ms": 131.06792100006714, "fps": 8.953180894620893},
+    "peak_allocated_bytes": 146302464,
+    "peak_reserved_bytes": 180355072
+  },
+  "source": "outputs/phase5_benchmark/benchmark.json"
+}

@@ -1,0 +1,2 @@
+Populate from docs/environment.lock.md and the exact runtime before execution.
+Record project commit, OpenPCDet revision, GPU, Python, PyTorch, CUDA, and seeds.

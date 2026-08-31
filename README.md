@@ -4,7 +4,7 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 5 - Multi-Model Benchmark (PASS)**
+**Phase 6.0 - V1.1 Experiment Protocol Freeze (PASS)**
 
 Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
 Phase 1 real KITTI geometry validation passed on frames `000000`, `004139`, and
@@ -230,3 +230,18 @@ Reports are written to
 contains local results from `nuScenes v1.0-mini / mini_val`; the historical
 KITTI PointPillars AP_R40 result remains a separate reference and is never
 ranked with nuScenes mAP/NDS.
+
+## Phase 6 V1.1 Scope
+
+Due to the RTX 2060 6GB and available-data constraints, Phase 6 is explicitly
+controlled exploratory optimization on `nuScenes v1.0-mini`, not a full
+nuScenes benchmark or SOTA claim. Parameters are selected on official
+`mini_train`, frozen before confirmatory `mini_val`, and every result is
+labeled `nuScenes v1.0-mini exploratory experiment`. The protocol includes
+GT-leakage prevention, frozen distance/density metrics, paired scene-level
+bootstrap, exact prediction-cache provenance, runtime accounting, and retained
+negative results. No optimization experiment was executed in Phase 6.0.
+
+See [`docs/project_design_v1_1_amendment.md`](docs/project_design_v1_1_amendment.md),
+[`docs/10_phase6_experiment_protocol.md`](docs/10_phase6_experiment_protocol.md),
+and [`experiments/README.md`](experiments/README.md).

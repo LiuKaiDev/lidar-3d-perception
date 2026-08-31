@@ -1,0 +1,73 @@
+experiment_id: E0
+status: PASS
+hypothesis: Record the verified pretrained baselines under the frozen Phase 6 V1.1 protocol; no optimization is tested.
+dataset:
+  name: nuscenes
+  version: v1.0-mini
+  split: mini_val
+  role: previously exposed confirmatory baseline record
+models:
+  - name: centerpoint_pointpillar
+    config: configs/detectors/centerpoint/nuscenes_mini.yaml
+    config_sha256: 58b5b8b2e4303a4563b6635c7d9f75a41acc8714635914b4d2cfb95ba8e40fc0
+    checkpoint_sha256: 955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a
+    sweeps: 10
+  - name: voxelnext
+    config: configs/detectors/voxelnext/nuscenes_mini.yaml
+    config_sha256: 2e44c2d2c3c533e6f47dfeb5203de29e98232925c17e0c36b2320477785e75f9
+    checkpoint_sha256: 9409dd8c13c8c8ca546c8c5af024856d03029e2def8d5fc0fa3bfe4477e7d88b
+    sweeps: 10
+prediction_candidate_threshold: 0.1
+score_filtering_policy: fixed upstream OpenPCDet post-processing threshold and project export threshold; candidates below 0.1 are unavailable
+matching:
+  strategy: center_distance
+  class_aware: true
+  one_to_one: true
+  threshold_m: 2.0
+  comparison: distance <= threshold
+distance_bins:
+  - {name: 0-10m, lower: 0.0, upper: 10.0}
+  - {name: 10-20m, lower: 10.0, upper: 20.0}
+  - {name: 20-30m, lower: 20.0, upper: 30.0}
+  - {name: 30-40m, lower: 30.0, upper: 40.0}
+  - {name: 40-50m, lower: 40.0, upper: 50.0}
+  - {name: 50m+, lower: 50.0, upper: .inf}
+density_bins:
+  - {name: 0-5, lower: 0.0, upper: 6.0}
+  - {name: 6-10, lower: 6.0, upper: 11.0}
+  - {name: 11-20, lower: 11.0, upper: 21.0}
+  - {name: 21-50, lower: 21.0, upper: 51.0}
+  - {name: 51+, lower: 51.0, upper: .inf}
+target_metrics: [recall_50m_plus, recall_0_5_points]
+secondary_metrics:
+  - recall_40_50m
+  - overall_custom_recall
+  - precision
+  - fp_count
+  - matched_localization_error_m
+  - average_matched_confidence
+  - per_class_distance_recall
+  - per_class_density_recall
+official_metrics: [mAP, NDS, mATE, mASE, mAOE, mAVE, mAAE]
+bootstrap:
+  resampling_unit: scene
+  repetitions: 1000
+  seed: 42
+  confidence_level: 0.95
+  paired_comparison: true
+tunable_parameters: {}
+controlled_variables:
+  dataset_version: v1.0-mini
+  matching_threshold_m: 2.0
+  density_evaluation_source: current keyframe points inside oriented GT boxes
+  official_evaluator: detection_cvpr_2019
+  optimization_change: none
+runtime_protocol:
+  batch_size: 1
+  precision: FP32
+  warmup: 20
+  iterations: 100
+  timing_method: Phase 5 synchronized wall clock and CUDA events
+inference_policy:
+  ground_truth_at_inference: false
+  allowed_features: [predicted_boxes, predicted_scores, predicted_box_range, sensor_points_in_predicted_box]
