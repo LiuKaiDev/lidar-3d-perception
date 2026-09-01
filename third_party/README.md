@@ -1,22 +1,12 @@
-# Third-party Dependencies
+# Third-party dependencies
 
-`OpenPCDet` will live under this directory during Phase 0.
+`OpenPCDet` is tracked as a Git submodule at the frozen Phase 6 revision
+`233f849829b6ac19afb8af8837a0246890908755`. Its source, configs, and CUDA ops
+remain third-party and are not copied into `lidar_perception/`; the project
+adapter is the only integration boundary. See
+[`docs/15_third_party_and_assets.md`](../docs/15_third_party_and_assets.md) for
+asset identities, licensing evidence, and redistribution boundaries.
 
-Target structure:
-
-```text
-third_party/
-└── OpenPCDet/
-```
-
-Do not copy OpenPCDet source files into the project's own Python package.
-
-During Phase 0, Codex should:
-
-1. inspect the actual WSL / GPU / Python / PyTorch environment;
-2. determine a compatible OpenPCDet revision and dependency combination;
-3. prefer a fixed Git submodule / fixed commit strategy;
-4. compile and smoke-test required CUDA ops;
-5. record the exact commit and environment in `docs/environment.lock.md`.
-
-No OpenPCDet source modification should be made during repository bootstrap.
+CPU tests do not import OpenPCDet or initialize detector models. GPU validation
+and the demo require a checked-out submodule, compatible CUDA Torch/spconv, the
+nuScenes devkit, a local dataset, and a verified checkpoint.

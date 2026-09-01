@@ -12,6 +12,11 @@ requires-python = ">=3.12"
 include = ["lidar_perception*"]
 
 [project.optional-dependencies]
+ci = [
+    "pytest==8.3.5",
+    "numpy==1.26.4",
+    "PyYAML==6.0.2",
+]
 phase1 = [
     "pytest==8.3.5",
     "matplotlib==3.9.2",

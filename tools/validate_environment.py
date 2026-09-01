@@ -32,7 +32,10 @@ def _python_check() -> str:
 
 
 def _project_check() -> str:
-    required = [ROOT / "lidar_perception", ROOT / "configs/system/portfolio.yaml", ROOT / "third_party/OpenPCDet"]
+    # CPU validation is intentionally usable from a source checkout that has
+    # not initialized the optional detector submodule.  GPU validation checks
+    # the submodule explicitly in ``_openpcdet_check`` below.
+    required = [ROOT / "lidar_perception", ROOT / "configs/system/portfolio.yaml"]
     missing = [str(path) for path in required if not path.exists()]
     if missing:
         raise RuntimeError("missing project paths: " + ", ".join(missing))
