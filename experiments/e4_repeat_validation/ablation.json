@@ -1,0 +1,23 @@
+{
+  "e3_repeat_exact_match": true,
+  "experiment": "E4",
+  "frozen_source": "experiments/e3_late_fusion/frozen_config.json",
+  "official_repeat_exact_match": true,
+  "selected_config": {
+    "association_threshold_m": 0.5,
+    "candidate_floor": 0.1,
+    "centerpoint_weight": 1.2,
+    "geometry_policy": "winner_take_all",
+    "max_boxes": 500,
+    "schema_version": "lidar_perception.e3_late_fusion.v1",
+    "score_rule": "probabilistic_or",
+    "voxelnext_weight": 1.0
+  },
+  "status": "PASS",
+  "variants": [
+    "centerpoint",
+    "voxelnext",
+    "naive_union",
+    "e3"
+  ]
+}

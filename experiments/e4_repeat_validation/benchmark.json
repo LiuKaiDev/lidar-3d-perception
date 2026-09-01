@@ -1,0 +1,9 @@
+{
+  "measurement_scope": "inherited frozen E3 runtime; E4 repeats cached-prediction accuracy only",
+  "centerpoint_e2e_reference_ms": 70.24,
+  "voxelnext_e2e_reference_ms": 111.69,
+  "e3_fusion_cpu_ms_per_sample": 58.96628524989168,
+  "dual_detector_estimated_total_ms_per_sample": 240.8962852498917,
+  "estimate_not_measured_end_to_end": true,
+  "execution_model": "sequential detectors plus cached-prediction CPU fusion"
+}

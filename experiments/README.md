@@ -10,7 +10,7 @@ Negative results remain in this index and are not deleted.
 | E1 | Predicted-range-aware calibration | NEGATIVE | `mini_train` only | Frozen settings on `mini_val` |
 | E2 | Predicted-box sparsity-aware policy | PASS | `mini_train` only | Frozen settings on `mini_val` |
 | E3 | CenterPoint + VoxelNeXt late fusion | PASS (DIRECTIONAL) | `mini_train` only | Frozen settings on `mini_val` |
-| E4 | Repeat validation and final ablation | PLANNED | No new `mini_val` tuning | `mini_val` repeat/report |
+| E4 | Repeat validation and final ablation | PASS (DIRECTIONAL) | No new `mini_val` tuning | `mini_val` repeat/report |
 
 Allowed statuses are `PLANNED`, `RUNNING`, `PASS`, `NEGATIVE`, and `BLOCKED`.
 Copy `experiments/_template/` for each new experiment, fill the complete

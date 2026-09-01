@@ -4,7 +4,7 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 6.0 - V1.1 Experiment Protocol Freeze (PASS)**
+**Phase 6.4 - V1.1 Exploratory Experiments Closed (PASS)**
 
 Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
 Phase 1 real KITTI geometry validation passed on frames `000000`, `004139`, and
@@ -240,8 +240,11 @@ nuScenes benchmark or SOTA claim. Parameters are selected on official
 labeled `nuScenes v1.0-mini exploratory experiment`. The protocol includes
 GT-leakage prevention, frozen distance/density metrics, paired scene-level
 bootstrap, exact prediction-cache provenance, runtime accounting, and retained
-negative results. No optimization experiment was executed in Phase 6.0.
+negative results. E1, E2, E3, and the final E4 repeat validation are recorded
+under `experiments/`; E3 is a directional ablation rather than the default
+detector because VoxelNeXt retains the strongest official metrics.
 
 See [`docs/project_design_v1_1_amendment.md`](docs/project_design_v1_1_amendment.md),
 [`docs/10_phase6_experiment_protocol.md`](docs/10_phase6_experiment_protocol.md),
-and [`experiments/README.md`](experiments/README.md).
+[`docs/11_phase6_closure.md`](docs/11_phase6_closure.md), and
+[`experiments/README.md`](experiments/README.md).
