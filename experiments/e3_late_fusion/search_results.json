@@ -1,10 +1,342 @@
 {
-  "status": "blocked",
-  "reason": "VoxelNeXt mini_train and mini_val prediction caches are not present; no GPU inference or tuning was performed.",
-  "search_space": {
-    "association_threshold_m": [0.5, 1.0, 1.5, 2.0],
-    "centerpoint_weight": [0.8, 1.0, 1.2],
-    "voxelnext_weight": [1.0]
+  "configurations": [
+    {
+      "candidate_count": 65255,
+      "configuration_id": "e3_001",
+      "metrics": {
+        "fp_count": 54519,
+        "gt_count": 13923,
+        "matched_count": 10736,
+        "overall_custom_recall": 0.7710981828628888,
+        "precision": 0.16452379128036165,
+        "recall_0_5_points": 0.6316292403248925,
+        "recall_40_50m": 0.7763636363636364,
+        "recall_50m_plus": 0.28100911002102313
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 0.5,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 0.8,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 78437,
+      "configuration_id": "e3_002",
+      "metrics": {
+        "fp_count": 67670,
+        "gt_count": 13923,
+        "matched_count": 10767,
+        "overall_custom_recall": 0.7733247145011851,
+        "precision": 0.13726940092048395,
+        "recall_0_5_points": 0.634854276158624,
+        "recall_40_50m": 0.7793939393939394,
+        "recall_50m_plus": 0.2848633496846531
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 0.5,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.0,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 78437,
+      "configuration_id": "e3_003",
+      "metrics": {
+        "fp_count": 67669,
+        "gt_count": 13923,
+        "matched_count": 10768,
+        "overall_custom_recall": 0.7733965381024205,
+        "precision": 0.1372821500057371,
+        "recall_0_5_points": 0.6349737219302437,
+        "recall_40_50m": 0.7793939393939394,
+        "recall_50m_plus": 0.2848633496846531
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 0.5,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.2,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "lexicographic primary recall rule",
+      "selected": true
+    },
+    {
+      "candidate_count": 63065,
+      "configuration_id": "e3_004",
+      "metrics": {
+        "fp_count": 52341,
+        "gt_count": 13923,
+        "matched_count": 10724,
+        "overall_custom_recall": 0.7702362996480644,
+        "precision": 0.1700467771347023,
+        "recall_0_5_points": 0.630315336837076,
+        "recall_40_50m": 0.7745454545454545,
+        "recall_50m_plus": 0.279957953749124
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 1.0,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 0.8,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 75749,
+      "configuration_id": "e3_005",
+      "metrics": {
+        "fp_count": 64993,
+        "gt_count": 13923,
+        "matched_count": 10756,
+        "overall_custom_recall": 0.7725346548875961,
+        "precision": 0.14199527386500152,
+        "recall_0_5_points": 0.6336598184424271,
+        "recall_40_50m": 0.776969696969697,
+        "recall_50m_plus": 0.28451296426068673
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 1.0,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.0,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 75749,
+      "configuration_id": "e3_006",
+      "metrics": {
+        "fp_count": 64995,
+        "gt_count": 13923,
+        "matched_count": 10754,
+        "overall_custom_recall": 0.7723910076851254,
+        "precision": 0.14196887087618318,
+        "recall_0_5_points": 0.6335403726708074,
+        "recall_40_50m": 0.776969696969697,
+        "recall_50m_plus": 0.2841625788367204
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 1.0,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.2,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 62279,
+      "configuration_id": "e3_007",
+      "metrics": {
+        "fp_count": 51560,
+        "gt_count": 13923,
+        "matched_count": 10719,
+        "overall_custom_recall": 0.7698771816418876,
+        "precision": 0.1721125901186596,
+        "recall_0_5_points": 0.629956999522217,
+        "recall_40_50m": 0.7733333333333333,
+        "recall_50m_plus": 0.279957953749124
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 1.5,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 0.8,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 74702,
+      "configuration_id": "e3_008",
+      "metrics": {
+        "fp_count": 63954,
+        "gt_count": 13923,
+        "matched_count": 10748,
+        "overall_custom_recall": 0.7719600660777132,
+        "precision": 0.1438783432839817,
+        "recall_0_5_points": 0.632943143812709,
+        "recall_40_50m": 0.7763636363636364,
+        "recall_50m_plus": 0.2841625788367204
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 1.5,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.0,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 74702,
+      "configuration_id": "e3_009",
+      "metrics": {
+        "fp_count": 63955,
+        "gt_count": 13923,
+        "matched_count": 10747,
+        "overall_custom_recall": 0.7718882424764778,
+        "precision": 0.1438649567615325,
+        "recall_0_5_points": 0.6328236980410894,
+        "recall_40_50m": 0.7763636363636364,
+        "recall_50m_plus": 0.28381219341275404
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 1.5,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.2,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 61750,
+      "configuration_id": "e3_010",
+      "metrics": {
+        "fp_count": 51039,
+        "gt_count": 13923,
+        "matched_count": 10711,
+        "overall_custom_recall": 0.7693025928320046,
+        "precision": 0.1734574898785425,
+        "recall_0_5_points": 0.6291208791208791,
+        "recall_40_50m": 0.7715151515151515,
+        "recall_50m_plus": 0.27925718290119134
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 2.0,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 0.8,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 73976,
+      "configuration_id": "e3_011",
+      "metrics": {
+        "fp_count": 63240,
+        "gt_count": 13923,
+        "matched_count": 10736,
+        "overall_custom_recall": 0.7710981828628888,
+        "precision": 0.1451281496701633,
+        "recall_0_5_points": 0.6317486860965121,
+        "recall_40_50m": 0.7739393939393939,
+        "recall_50m_plus": 0.28276103714085493
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 2.0,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.0,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    },
+    {
+      "candidate_count": 73976,
+      "configuration_id": "e3_012",
+      "metrics": {
+        "fp_count": 63242,
+        "gt_count": 13923,
+        "matched_count": 10734,
+        "overall_custom_recall": 0.770954535660418,
+        "precision": 0.1451011138747702,
+        "recall_0_5_points": 0.6315097945532728,
+        "recall_40_50m": 0.7745454545454545,
+        "recall_50m_plus": 0.2817098808689559
+      },
+      "official_metrics": null,
+      "parameters": {
+        "association_threshold_m": 2.0,
+        "candidate_floor": 0.1,
+        "centerpoint_weight": 1.2,
+        "geometry_policy": "winner_take_all",
+        "max_boxes": 500,
+        "schema_version": "lidar_perception.e3_late_fusion.v1",
+        "score_rule": "probabilistic_or",
+        "voxelnext_weight": 1.0
+      },
+      "reason": "not selected",
+      "selected": false
+    }
+  ],
+  "fit_split": "mini_train",
+  "mini_val_used": false,
+  "schema_version": "lidar_perception.e3_search.v1",
+  "selected_config": {
+    "association_threshold_m": 0.5,
+    "candidate_floor": 0.1,
+    "centerpoint_weight": 1.2,
+    "geometry_policy": "winner_take_all",
+    "max_boxes": 500,
+    "schema_version": "lidar_perception.e3_late_fusion.v1",
+    "score_rule": "probabilistic_or",
+    "voxelnext_weight": 1.0
   },
-  "configurations": []
+  "selection_rule": "maximize 50m+ recall then 0-5-point recall, lower FP, lower threshold, weight closest to 1"
 }

@@ -1,5 +1,5 @@
 experiment_id: E3
-status: BLOCKED
+status: PASS
 hypothesis: CenterPoint and VoxelNeXt may make complementary errors recoverable by deterministic prediction-only late fusion.
 dataset:
   name: nuscenes

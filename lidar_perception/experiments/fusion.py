@@ -134,14 +134,26 @@ def associate_predictions(
     if not np.isfinite(threshold) or threshold < 0:
         raise ValueError("threshold_m must be finite and non-negative")
     candidates: list[tuple[float, float, float, int, int]] = []
-    for ci, cp in enumerate(centerpoint.boxes):
-        for vi, vn in enumerate(voxelnext.boxes):
-            if cp.label != vn.label:
-                continue
-            distance = float(np.linalg.norm(cp.center[:2] - vn.center[:2]))
-            if distance <= threshold:
-                # score keys only break equal-distance ties; indices finish the order.
-                candidates.append((distance, -_score(cp, centerpoint_weight), -_score(vn, voxelnext_weight), ci, vi))
+    cp_by_label: dict[str, list[int]] = {}
+    vn_by_label: dict[str, list[int]] = {}
+    for index, box in enumerate(centerpoint.boxes):
+        cp_by_label.setdefault(box.label, []).append(index)
+    for index, box in enumerate(voxelnext.boxes):
+        vn_by_label.setdefault(box.label, []).append(index)
+    cp_scores = [_score(box, centerpoint_weight) for box in centerpoint.boxes]
+    vn_scores = [_score(box, voxelnext_weight) for box in voxelnext.boxes]
+    threshold_squared = threshold * threshold
+    for label in sorted(cp_by_label.keys() & vn_by_label.keys()):
+        cp_indices = cp_by_label[label]
+        vn_indices = vn_by_label[label]
+        cp_centers = np.asarray([centerpoint.boxes[index].center[:2] for index in cp_indices])
+        vn_centers = np.asarray([voxelnext.boxes[index].center[:2] for index in vn_indices])
+        squared = np.sum((cp_centers[:, None, :] - vn_centers[None, :, :]) ** 2, axis=2)
+        for cp_local, vn_local in np.argwhere(squared <= threshold_squared):
+            ci = cp_indices[int(cp_local)]
+            vi = vn_indices[int(vn_local)]
+            # score keys only break equal-distance ties; indices finish the order.
+            candidates.append((float(np.sqrt(squared[cp_local, vn_local])), -cp_scores[ci], -vn_scores[vi], ci, vi))
     candidates.sort()
     used_cp: set[int] = set()
     used_vn: set[int] = set()

@@ -1,12 +1,302 @@
 {
-  "status": "blocked",
-  "reason": "Evaluation requires aligned VoxelNeXt predictions; only CenterPoint caches are available.",
-  "matching": {
-    "strategy": "center_distance",
-    "threshold_m": 2.0,
-    "comparison": "distance <= threshold",
-    "class_aware": true,
-    "one_to_one": true
+  "cache": {
+    "cache_hits": 323,
+    "centerpoint_aligned": true,
+    "entries": 323,
+    "inference_count": 0,
+    "load_report": null,
+    "no_duplicate_tokens": true,
+    "provenance": {
+      "candidate_threshold": 0.1,
+      "checkpoint_sha256": "9409dd8c13c8c8ca546c8c5af024856d03029e2def8d5fc0fa3bfe4477e7d88b",
+      "dataset": "nuscenes",
+      "dataset_version": "v1.0-mini",
+      "detector": "voxelnext",
+      "detector_config": "cbgs_voxel0075_voxelnext.yaml",
+      "detector_config_sha256": "84f5ddcab780ef108af77412f9bad587c21299419530c8708121442449115a0d",
+      "prediction_schema_version": "lidar_perception.prediction_batch.v1",
+      "sample_token": "<per-entry>",
+      "score_filtering_policy": "fixed upstream OpenPCDet and project candidate threshold 0.1",
+      "split": "mini_train",
+      "sweeps": 10
+    },
+    "representative_validation": [
+      {
+        "classes": [
+          "barrier",
+          "bicycle",
+          "bus",
+          "car",
+          "construction_vehicle",
+          "motorcycle",
+          "pedestrian",
+          "traffic_cone",
+          "trailer",
+          "truck"
+        ],
+        "minimum_score": 0.1003277525305748,
+        "prediction_count": 304,
+        "sample_token": "ca9a282c9e77460f8360f564131a8af5",
+        "velocity_count": 304
+      },
+      {
+        "classes": [
+          "barrier",
+          "bicycle",
+          "bus",
+          "car",
+          "construction_vehicle",
+          "motorcycle",
+          "pedestrian",
+          "traffic_cone",
+          "trailer",
+          "truck"
+        ],
+        "minimum_score": 0.10019644349813461,
+        "prediction_count": 101,
+        "sample_token": "8fe9664cec514a58b1184c4fcefda6b5",
+        "velocity_count": 101
+      },
+      {
+        "classes": [
+          "barrier",
+          "bicycle",
+          "bus",
+          "car",
+          "construction_vehicle",
+          "motorcycle",
+          "pedestrian",
+          "traffic_cone",
+          "trailer",
+          "truck"
+        ],
+        "minimum_score": 0.10029046982526779,
+        "prediction_count": 107,
+        "sample_token": "abf3d91d3c28407e80e3334fe89c03cb",
+        "velocity_count": 107
+      }
+    ],
+    "sequential_peak_vram_mb": null,
+    "split": "mini_train"
   },
-  "sections": {}
+  "candidate_ceiling": {
+    "0_5_points": {
+      "centerpoint": {
+        "coverage": 0.5887482083134257,
+        "covered": 4929,
+        "gt_count": 8372
+      },
+      "centerpoint_only": 211,
+      "union": {
+        "coverage": 0.6447682752030578,
+        "covered": 5398,
+        "gt_count": 8372
+      },
+      "voxelnext": {
+        "coverage": 0.6195652173913043,
+        "covered": 5187,
+        "gt_count": 8372
+      },
+      "voxelnext_only": 469
+    },
+    "50m_plus": {
+      "centerpoint": {
+        "coverage": 0.20532585844428872,
+        "covered": 586,
+        "gt_count": 2854
+      },
+      "centerpoint_only": 47,
+      "union": {
+        "coverage": 0.2880168185003504,
+        "covered": 822,
+        "gt_count": 2854
+      },
+      "voxelnext": {
+        "coverage": 0.27154870357393135,
+        "covered": 775,
+        "gt_count": 2854
+      },
+      "voxelnext_only": 236
+    },
+    "overall": {
+      "centerpoint": {
+        "coverage": 0.7396394455217985,
+        "covered": 10298,
+        "gt_count": 13923
+      },
+      "centerpoint_only": 236,
+      "union": {
+        "coverage": 0.7792860734037205,
+        "covered": 10850,
+        "gt_count": 13923
+      },
+      "voxelnext": {
+        "coverage": 0.7623357035121741,
+        "covered": 10614,
+        "gt_count": 13923
+      },
+      "voxelnext_only": 552
+    }
+  },
+  "matching": {
+    "comparison": "distance <= threshold",
+    "gt_used_for": "evaluation-only",
+    "matching": "class-aware one-to-one center distance",
+    "threshold_m": 2.0
+  },
+  "sections": {
+    "0_5_points": {
+      "counts": {
+        "centerpoint_only": 253,
+        "detected_by_both": 4555,
+        "neither": 3056,
+        "voxelnext_only": 508
+      },
+      "coverage": 0.6349737219302437,
+      "total": 8372
+    },
+    "40_50m": {
+      "counts": {
+        "centerpoint_only": 83,
+        "detected_by_both": 1109,
+        "neither": 365,
+        "voxelnext_only": 93
+      },
+      "coverage": 0.7787878787878788,
+      "total": 1650
+    },
+    "50m_plus": {
+      "counts": {
+        "centerpoint_only": 48,
+        "detected_by_both": 527,
+        "neither": 2041,
+        "voxelnext_only": 238
+      },
+      "coverage": 0.2848633496846531,
+      "total": 2854
+    },
+    "6_10_points": {
+      "counts": {
+        "centerpoint_only": 12,
+        "detected_by_both": 1359,
+        "neither": 70,
+        "voxelnext_only": 23
+      },
+      "coverage": 0.9521857923497268,
+      "total": 1464
+    },
+    "classes": {
+      "barrier": {
+        "counts": {
+          "centerpoint_only": 51,
+          "detected_by_both": 1831,
+          "neither": 360,
+          "voxelnext_only": 81
+        },
+        "coverage": 0.8450279810589755,
+        "total": 2323
+      },
+      "bicycle": {
+        "counts": {
+          "centerpoint_only": 6,
+          "detected_by_both": 132,
+          "neither": 41,
+          "voxelnext_only": 12
+        },
+        "coverage": 0.7853403141361257,
+        "total": 191
+      },
+      "bus": {
+        "counts": {
+          "centerpoint_only": 8,
+          "detected_by_both": 179,
+          "neither": 159,
+          "voxelnext_only": 23
+        },
+        "coverage": 0.5691056910569106,
+        "total": 369
+      },
+      "car": {
+        "counts": {
+          "centerpoint_only": 53,
+          "detected_by_both": 3328,
+          "neither": 1469,
+          "voxelnext_only": 201
+        },
+        "coverage": 0.7091665016828351,
+        "total": 5051
+      },
+      "construction_vehicle": {
+        "counts": {
+          "centerpoint_only": 4,
+          "detected_by_both": 132,
+          "neither": 56,
+          "voxelnext_only": 4
+        },
+        "coverage": 0.7142857142857143,
+        "total": 196
+      },
+      "motorcycle": {
+        "counts": {
+          "centerpoint_only": 14,
+          "detected_by_both": 99,
+          "neither": 71,
+          "voxelnext_only": 28
+        },
+        "coverage": 0.6650943396226415,
+        "total": 212
+      },
+      "pedestrian": {
+        "counts": {
+          "centerpoint_only": 55,
+          "detected_by_both": 2921,
+          "neither": 553,
+          "voxelnext_only": 128
+        },
+        "coverage": 0.8487831555920153,
+        "total": 3657
+      },
+      "traffic_cone": {
+        "counts": {
+          "centerpoint_only": 71,
+          "detected_by_both": 863,
+          "neither": 309,
+          "voxelnext_only": 96
+        },
+        "coverage": 0.7692307692307693,
+        "total": 1339
+      },
+      "trailer": {
+        "counts": {
+          "centerpoint_only": 2,
+          "detected_by_both": 50,
+          "neither": 8,
+          "voxelnext_only": 0
+        },
+        "coverage": 0.8666666666666667,
+        "total": 60
+      },
+      "truck": {
+        "counts": {
+          "centerpoint_only": 17,
+          "detected_by_both": 361,
+          "neither": 129,
+          "voxelnext_only": 18
+        },
+        "coverage": 0.7542857142857143,
+        "total": 525
+      }
+    },
+    "overall": {
+      "counts": {
+        "centerpoint_only": 281,
+        "detected_by_both": 9896,
+        "neither": 3155,
+        "voxelnext_only": 591
+      },
+      "coverage": 0.7733965381024205,
+      "total": 13923
+    }
+  },
+  "status": "completed"
 }

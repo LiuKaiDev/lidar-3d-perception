@@ -1,8 +1,23 @@
 {
-  "status": "BLOCKED",
-  "fusion_overhead": "not measured in this cache-only implementation turn",
-  "centerpoint_reference_ms": 70.24,
-  "voxelnext_reference_ms": 111.69,
-  "dual_detector_e2e": "not measured; detector references are retained only with existing Phase 5 provenance",
-  "peak_vram": "not measured"
+  "dual_detector_total": {
+    "centerpoint_e2e_ms": 70.24,
+    "estimated_total_ms": 240.8962852498917,
+    "fusion_overhead_ms": 58.96628524989168,
+    "type": "estimated",
+    "voxelnext_e2e_ms": 111.69
+  },
+  "execution_model": "detectors generated sequentially; fusion operates on cached predictions",
+  "fusion_only": {
+    "association_time_ms": 16.165389343402722,
+    "fusion_time_ms": 40.05028890428941,
+    "iterations": 20,
+    "peak_python_memory_bytes": 28719052,
+    "samples_per_iteration": 81,
+    "sorting_time_ms": 2.7506070021995526,
+    "total_fusion_time_ms": 58.96628524989168
+  },
+  "sequential_voxelnext_peak_vram_mb": {
+    "mini_train": null,
+    "mini_val": 266.44873046875
+  }
 }

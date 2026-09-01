@@ -1,11 +1,27 @@
 {
-  "association_threshold_m": 1.0,
-  "centerpoint_weight": 1.0,
-  "voxelnext_weight": 1.0,
-  "score_rule": "probabilistic_or",
-  "geometry_policy": "winner_take_all",
-  "candidate_floor": 0.1,
-  "max_boxes": 500,
-  "schema_version": "lidar_perception.e3_late_fusion.v1",
-  "status": "not_frozen_blocked_missing_voxelnext_caches"
+  "frozen": true,
+  "frozen_before_split": "mini_val",
+  "mini_train_metrics": {
+    "fp_count": 67669,
+    "gt_count": 13923,
+    "matched_count": 10768,
+    "overall_custom_recall": 0.7733965381024205,
+    "precision": 0.1372821500057371,
+    "recall_0_5_points": 0.6349737219302437,
+    "recall_40_50m": 0.7793939393939394,
+    "recall_50m_plus": 0.2848633496846531
+  },
+  "order_marker": "mini_train_cache->complementarity->search->freeze->mini_val_cache->confirmation",
+  "search_log": "search_results.json",
+  "selected_config": {
+    "association_threshold_m": 0.5,
+    "candidate_floor": 0.1,
+    "centerpoint_weight": 1.2,
+    "geometry_policy": "winner_take_all",
+    "max_boxes": 500,
+    "schema_version": "lidar_perception.e3_late_fusion.v1",
+    "score_rule": "probabilistic_or",
+    "voxelnext_weight": 1.0
+  },
+  "selection_rule": "maximize 50m+ recall then 0-5-point recall, lower FP, lower threshold, weight closest to 1"
 }
