@@ -4,7 +4,28 @@ LiDAR 3D perception and object detection system for autonomous driving and mobil
 
 ## Current Status
 
-**Phase 6.4 - V1.1 Exploratory Experiments Closed (PASS)**
+**Phase 7A - Reproducibility Entrypoints (PASS); Phase 6.4 Closed**
+
+The default detector is **VoxelNeXt**. Frozen E3 late fusion remains a
+directional research ablation: it improves far/sparse custom recall but adds
+false positives and trails VoxelNeXt on official mAP/NDS.
+
+## Quick Start
+
+The environment and asset validators are read-only. The demo writes one
+PredictionBatch JSON result to its default `outputs/demo/...` path:
+
+```bash
+PYTHONPATH=.:tools .venv/bin/python tools/validate_environment.py --profile cpu
+PYTHONPATH=.:tools .venv/bin/python tools/validate_environment.py --profile gpu
+PYTHONPATH=.:tools .venv/bin/python tools/validate_assets.py --detector voxelnext
+PYTHONPATH=.:tools .venv/bin/python tools/demo_nuscenes.py --sample-token <mini-sample-token>
+```
+
+Omitting `--detector` selects VoxelNeXt. Use `--detector centerpoint` for the
+baseline or `--detector e3` for the frozen, sequential dual-detector ablation.
+See [`docs/12_phase7_reproducibility_entrypoints.md`](docs/12_phase7_reproducibility_entrypoints.md)
+for asset requirements, side effects, runtime semantics, and output paths.
 
 Phase 0 is frozen in [`docs/environment.lock.md`](docs/environment.lock.md).
 Phase 1 real KITTI geometry validation passed on frames `000000`, `004139`, and
@@ -12,7 +33,9 @@ Phase 1 real KITTI geometry validation passed on frames `000000`, `004139`, and
 evaluation. Phase 3 validated the pretrained nuScenes CenterPoint-PointPillar
 pipeline, Phase 4 adds project-owned matching and bad-case analysis, and Phase
 5 compares CenterPoint-PointPillar with VoxelNeXt under one official mini
-accuracy and RTX 2060 runtime protocol. Results are recorded under `outputs/`.
+accuracy and RTX 2060 runtime protocol. Phase 6 completed E0-E4 and exact E4
+repeat validation. Results are recorded under `experiments/`; ignored runtime
+outputs remain under `outputs/`.
 
 ## Project Strategy
 

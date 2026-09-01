@@ -1,0 +1,18 @@
+portfolio:
+  default_detector: voxelnext
+  dataset:
+    name: nuscenes
+    root: ~/datasets/nuscenes
+    version: v1.0-mini
+    max_sweeps: 10
+    default_output_dir: outputs/demo
+    phase6_cache_root: outputs/phase6_prediction_cache
+  detectors:
+    centerpoint:
+      config: configs/detectors/centerpoint/nuscenes_mini.yaml
+    voxelnext:
+      config: configs/detectors/voxelnext/nuscenes_mini.yaml
+  e3:
+    centerpoint_config: configs/detectors/centerpoint/nuscenes_mini.yaml
+    voxelnext_config: configs/detectors/voxelnext/nuscenes_mini.yaml
+    frozen_config: experiments/e3_late_fusion/frozen_config.json

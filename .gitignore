@@ -44,6 +44,11 @@ checkpoints/
 *.pth
 *.pt
 *.ckpt
+*.safetensors
+*.onnx
+*.engine
+*.trt
+*.weights
 
 # Runtime outputs
 outputs/*

@@ -1,0 +1,138 @@
+{
+  "cache": {
+    "mini_train": {
+      "centerpoint": {
+        "compatible_entries": 323,
+        "entries": 323,
+        "key_provenance": {
+          "candidate_threshold": 0.1,
+          "checkpoint_sha256": "955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a",
+          "dataset": "nuscenes",
+          "dataset_version": "v1.0-mini",
+          "detector": "centerpoint_pointpillar",
+          "detector_config": "configs/detectors/centerpoint/nuscenes_mini.yaml",
+          "detector_config_sha256": "58b5b8b2e4303a4563b6635c7d9f75a41acc8714635914b4d2cfb95ba8e40fc0",
+          "prediction_schema_version": "lidar_perception.prediction_batch.v1",
+          "score_filtering_policy": "fixed upstream OpenPCDet and project candidate threshold 0.1",
+          "split": "mini_train",
+          "sweeps": 10
+        },
+        "unique_tokens": 323,
+        "verified_on_current_machine": true
+      },
+      "voxelnext": {
+        "compatible_entries": 323,
+        "entries": 323,
+        "key_provenance": {
+          "candidate_threshold": 0.1,
+          "checkpoint_sha256": "9409dd8c13c8c8ca546c8c5af024856d03029e2def8d5fc0fa3bfe4477e7d88b",
+          "dataset": "nuscenes",
+          "dataset_version": "v1.0-mini",
+          "detector": "voxelnext",
+          "detector_config": "cbgs_voxel0075_voxelnext.yaml",
+          "detector_config_sha256": "84f5ddcab780ef108af77412f9bad587c21299419530c8708121442449115a0d",
+          "prediction_schema_version": "lidar_perception.prediction_batch.v1",
+          "score_filtering_policy": "fixed upstream OpenPCDet and project candidate threshold 0.1",
+          "split": "mini_train",
+          "sweeps": 10
+        },
+        "unique_tokens": 323,
+        "verified_on_current_machine": true
+      }
+    },
+    "mini_val": {
+      "centerpoint": {
+        "compatible_entries": 81,
+        "entries": 81,
+        "key_provenance": {
+          "candidate_threshold": 0.1,
+          "checkpoint_sha256": "955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a",
+          "dataset": "nuscenes",
+          "dataset_version": "v1.0-mini",
+          "detector": "centerpoint_pointpillar",
+          "detector_config": "configs/detectors/centerpoint/nuscenes_mini.yaml",
+          "detector_config_sha256": "58b5b8b2e4303a4563b6635c7d9f75a41acc8714635914b4d2cfb95ba8e40fc0",
+          "prediction_schema_version": "lidar_perception.prediction_batch.v1",
+          "score_filtering_policy": "fixed upstream OpenPCDet and project candidate threshold 0.1",
+          "split": "mini_val",
+          "sweeps": 10
+        },
+        "unique_tokens": 81,
+        "verified_on_current_machine": true
+      },
+      "voxelnext": {
+        "compatible_entries": 81,
+        "entries": 81,
+        "key_provenance": {
+          "candidate_threshold": 0.1,
+          "checkpoint_sha256": "9409dd8c13c8c8ca546c8c5af024856d03029e2def8d5fc0fa3bfe4477e7d88b",
+          "dataset": "nuscenes",
+          "dataset_version": "v1.0-mini",
+          "detector": "voxelnext",
+          "detector_config": "cbgs_voxel0075_voxelnext.yaml",
+          "detector_config_sha256": "84f5ddcab780ef108af77412f9bad587c21299419530c8708121442449115a0d",
+          "prediction_schema_version": "lidar_perception.prediction_batch.v1",
+          "score_filtering_policy": "fixed upstream OpenPCDet and project candidate threshold 0.1",
+          "split": "mini_val",
+          "sweeps": 10
+        },
+        "unique_tokens": 81,
+        "verified_on_current_machine": true
+      }
+    }
+  },
+  "dataset_label": "nuScenes v1.0-mini exploratory experiment",
+  "e4_repeat_validation": {
+    "classification": "DIRECTIONAL",
+    "custom_exact_repeat": true,
+    "official_exact_repeat": true,
+    "status": "PASS"
+  },
+  "environment": {
+    "cuda_available": true,
+    "nuscenes_devkit": "1.2.0",
+    "python": "3.12.3",
+    "spconv": "2.3.8",
+    "torch": "2.5.1+cu124",
+    "torch_cuda": "12.4",
+    "verified_on_current_machine": true
+  },
+  "limitations": {
+    "full_nuscenes_claim": false,
+    "mini_val_previously_exposed": true,
+    "mini_val_scene_count": 2,
+    "sota_claim": false
+  },
+  "models": {
+    "centerpoint": {
+      "config": "configs/detectors/centerpoint/nuscenes_mini.yaml",
+      "expected_sha256": "955a3e38868b81f6ae74f09f84a774ef002d03484c6a8e1194b147069c0a6c2a",
+      "present": true,
+      "verified": true
+    },
+    "default": "voxelnext",
+    "e3": {
+      "frozen_config": "experiments/e3_late_fusion/frozen_config.json",
+      "role": "directional late-fusion ablation; not the default"
+    },
+    "voxelnext": {
+      "config": "configs/detectors/voxelnext/nuscenes_mini.yaml",
+      "expected_sha256": "9409dd8c13c8c8ca546c8c5af024856d03029e2def8d5fc0fa3bfe4477e7d88b",
+      "present": true,
+      "verified": true
+    }
+  },
+  "phase6": {
+    "classification": "DIRECTIONAL",
+    "closure_commit": "3d25ca08fbd66f366ecc215c6c0a79da40c91c38",
+    "closure_tag": "v0.6.0-phase6-closure",
+    "closure_tag_target": "3d25ca08fbd66f366ecc215c6c0a79da40c91c38",
+    "status": "PASS",
+    "tag_target_verified": true
+  },
+  "schema_version": "lidar_perception.phase6_provenance.v1",
+  "third_party": {
+    "openpcdet_modified": false,
+    "openpcdet_revision": "233f849829b6ac19afb8af8837a0246890908755"
+  }
+}
