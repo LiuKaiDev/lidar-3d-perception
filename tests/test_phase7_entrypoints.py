@@ -100,6 +100,13 @@ def test_gpu_environment_missing_dependency_is_reported(monkeypatch) -> None:
     assert any(item["name"] == "spconv" and item["status"] == "FAIL" for item in failed["checks"])
 
 
+def test_openpcdet_check_reports_uninitialized_submodule(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(environment, "ROOT", tmp_path)
+    (tmp_path / "third_party/OpenPCDet").mkdir(parents=True)
+    with pytest.raises(RuntimeError, match="submodule is not initialized"):
+        environment._openpcdet_check()
+
+
 def _write_detector_config(path: Path, checkpoint: Path, expected_hash: str) -> None:
     path.write_text(yaml.safe_dump({"backend": {"checkpoint": str(checkpoint), "checkpoint_sha256": expected_hash}, "dataset": {}}), encoding="utf-8")
 

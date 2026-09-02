@@ -60,6 +60,8 @@ def _module_check(module_name: str, purpose: str) -> str:
 
 def _openpcdet_check() -> str:
     source = ROOT / "third_party/OpenPCDet"
+    if not (source / "pcdet/__init__.py").is_file():
+        raise RuntimeError("OpenPCDet submodule is not initialized; run git submodule update --init third_party/OpenPCDet")
     revision = subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True, stderr=subprocess.STDOUT).strip()
     expected = "233f849829b6ac19afb8af8837a0246890908755"
     if revision != expected:
