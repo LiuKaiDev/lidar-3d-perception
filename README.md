@@ -116,8 +116,8 @@ fixtures are available.
 GitHub Actions runs a focused CPU target on Python 3.12; it never initializes a
 detector, requires CUDA, downloads nuScenes/checkpoints, or runs inference. The
 workflow also runs environment validation, report `--check`, YAML/JSON parsing,
-and repository boundary checks. A CI badge is intentionally omitted until the
-workflow has a real successful run on GitHub.
+and repository boundary checks. A badge is omitted from this release-candidate
+draft; the exact commit result remains available in GitHub Actions.
 
 ## Data, models, and third-party code
 
@@ -140,3 +140,7 @@ out of scope here.
 
 For an interview-style explanation, see
 [`docs/14_portfolio_walkthrough.md`](docs/14_portfolio_walkthrough.md).
+Release preparation is tracked in
+[`docs/16_phase7_release_readiness.md`](docs/16_phase7_release_readiness.md),
+with the unpublished
+[`v0.7.0-rc1` notes draft](docs/releases/v0.7.0-rc1.md).
