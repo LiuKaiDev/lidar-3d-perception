@@ -117,30 +117,29 @@ GitHub Actions runs a focused CPU target on Python 3.12; it never initializes a
 detector, requires CUDA, downloads nuScenes/checkpoints, or runs inference. The
 workflow also runs environment validation, report `--check`, YAML/JSON parsing,
 and repository boundary checks. A badge is omitted from this release-candidate
-draft; the exact commit result remains available in GitHub Actions.
+package; the exact commit result remains available in GitHub Actions.
 
 ## Data, models, and third-party code
 
 Datasets, checkpoints, prediction caches, and runtime outputs are external or
-ignored assets and never enter Git. OpenPCDet is a submodule at revision
-`233f849829b6ac19afb8af8837a0246890908755`; its Apache-2.0 license is retained
-in the submodule. Checkpoint URLs and SHA-256 identities are recorded in the
-detector configs and [`docs/15_third_party_and_assets.md`](docs/15_third_party_and_assets.md).
-The project root has no selected license yet; choosing one is a release blocker
-for the owner, not a reason to block documentation or CI work.
+ignored assets and never enter Git. Original code and documentation in this
+repository are licensed under Apache-2.0; see [`LICENSE`](LICENSE). OpenPCDet
+is a submodule at revision `233f849829b6ac19afb8af8837a0246890908755`; its own
+Apache-2.0 license and copyright notices remain authoritative. nuScenes, KITTI,
+pretrained checkpoints, and other third-party assets follow their respective
+source terms and are not relicensed by this project. Checkpoint URLs and
+SHA-256 identities are recorded in the detector configs and
+[`docs/15_third_party_and_assets.md`](docs/15_third_party_and_assets.md).
 
 ## Limitations and roadmap
 
 The mini exploratory protocol is small, previously exposed, and not a full
 benchmark. Runtime values have explicit scopes and should not be compared across
-scopes. The next release-candidate work should decide a project license, repeat
-the protocol on an unseen/full split, verify a clean GitHub workflow run, and
-only then consider a release/tag. Tracking and a Phase 7 tag are deliberately
-out of scope here.
+scopes. Future work includes repeating the protocol on an unseen/full split and
+tracking; these are outside this release candidate.
 
 For an interview-style explanation, see
 [`docs/14_portfolio_walkthrough.md`](docs/14_portfolio_walkthrough.md).
 Release preparation is tracked in
 [`docs/16_phase7_release_readiness.md`](docs/16_phase7_release_readiness.md),
-with the unpublished
-[`v0.7.0-rc1` notes draft](docs/releases/v0.7.0-rc1.md).
+with the [`v0.7.0-rc1` release notes](docs/releases/v0.7.0-rc1.md).

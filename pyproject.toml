@@ -4,12 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lidar-3d-perception"
-version = "0.1.0"
+version = "0.7.0rc1"
 description = "LiDAR 3D perception geometry and dataset tools"
+license = "Apache-2.0"
 requires-python = ">=3.12"
 
 [tool.setuptools.packages.find]
 include = ["lidar_perception*"]
+
+[tool.setuptools.data-files]
+"share/lidar-3d-perception/configs/analysis" = ["configs/analysis/*.yaml"]
+"share/lidar-3d-perception/configs/benchmark" = ["configs/benchmark/*.yaml"]
+"share/lidar-3d-perception/configs/datasets" = ["configs/datasets/*.yaml"]
+"share/lidar-3d-perception/configs/detectors/centerpoint" = ["configs/detectors/centerpoint/*.yaml"]
+"share/lidar-3d-perception/configs/detectors/pointpillar" = ["configs/detectors/pointpillar/*.yaml"]
+"share/lidar-3d-perception/configs/detectors/voxelnext" = ["configs/detectors/voxelnext/*.yaml"]
+"share/lidar-3d-perception/configs/system" = ["configs/system/*.yaml"]
 
 [project.optional-dependencies]
 ci = [

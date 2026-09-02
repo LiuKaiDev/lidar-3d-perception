@@ -1,6 +1,6 @@
 # Phase 7 Release Readiness
 
-Status: **release preparation complete; formal release blocked**.
+Status: **release candidate prepared; not a stable release**.
 
 ## Acceptance Scope
 
@@ -24,12 +24,21 @@ SHA loop.
 
 ## Release Gates
 
-- **Required before tag/release:** project owner selects a root project license.
-- **Required before tag/release:** synchronize `pyproject.toml` version `0.1.0`
-  with the approved release/tag version.
-- **Required before tag/release:** final review of the release-notes draft and
-  successful CPU workflow for the release-candidate commit.
+- **Completed for this RC:** root Apache-2.0 license added and referenced in
+  package metadata and user-facing documentation.
+- **Completed for this RC:** `pyproject.toml` version synchronized to
+  `0.7.0rc1` and the final CPU workflow succeeded for the tagged commit.
+- **Completed for this RC:** release notes reviewed and published as the GitHub
+  prerelease body.
+- **Packaging boundary:** the wheel contains the project Python package,
+  Apache-2.0 license, and YAML configs under
+  `share/lidar-3d-perception/configs`. Repository tools such as environment
+  validation and the demo remain source-checkout CLIs rather than installed
+  console scripts; wheel smoke testing imports the installed package, exercises
+  schema/config parsing, and invokes those source tools against the wheel
+  environment.
 - **Future work, not this engineering gate:** unseen/full nuScenes validation.
+- **Future work, not this engineering gate:** tracking and PyPI publication.
 
-No Phase 7 tag or GitHub Release has been created. See the
-[v0.7.0-rc1 draft](releases/v0.7.0-rc1.md).
+The stable `v0.7.0` release remains intentionally out of scope. See the
+[v0.7.0-rc1 release notes](releases/v0.7.0-rc1.md).

@@ -32,9 +32,10 @@ or warn when required assets are absent rather than downloading them.
 
 ## Project license status
 
-There is currently no root-level `LICENSE`. The project-level license is left for
-the owner to decide and is a Phase 7C release blocker. This is intentional: no
-license terms are inferred from OpenPCDet or dataset terms.
+Original code and documentation in this repository are licensed under the
+Apache License 2.0 in the root [`LICENSE`](../LICENSE). This project license
+does not relicense OpenPCDet, nuScenes/KITTI data, pretrained checkpoints, or
+other third-party assets; each remains governed by its source terms.
 
 The project-owned scope is the adapter, geometry, schema, cache/provenance,
 matching/evaluation, frozen prediction-only fusion, validation/demo tooling,

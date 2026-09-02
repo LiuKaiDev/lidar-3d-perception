@@ -4,12 +4,22 @@ import json
 import re
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_release_metadata_and_license_are_synchronized() -> None:
+    metadata = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    assert metadata["version"] == "0.7.0rc1"
+    assert metadata["license"] == "Apache-2.0"
+    license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
+    assert "Apache License\n                           Version 2.0, January 2004" in license_text
+    assert "END OF TERMS AND CONDITIONS" in license_text
 
 
 def test_phase6_summary_is_generated_and_current() -> None:
