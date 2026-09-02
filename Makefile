@@ -1,9 +1,9 @@
 .PHONY: status tree validate-cpu validate-gpu validate-assets demo-help phase6-summary cpu-tests
 
 status:
-	@echo "LiDAR 3D Perception — Phase 7B portfolio packaging"
-	@echo "Default detector: VoxelNeXt"
-	@echo "Read: README.md, docs/13_system_architecture.md, docs/14_portfolio_walkthrough.md"
+	@echo "LiDAR 三维感知 — 文档与实验工具"
+	@echo "默认模型: VoxelNeXt"
+	@echo "文档入口: README.md, docs/README.md"
 
 tree:
 	@find . -maxdepth 3 -not -path './.git/*' | sort

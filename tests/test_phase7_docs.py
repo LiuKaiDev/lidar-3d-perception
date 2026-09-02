@@ -22,6 +22,22 @@ def test_release_metadata_and_license_are_synchronized() -> None:
     assert "END OF TERMS AND CONDITIONS" in license_text
 
 
+def test_documentation_entrypoints_are_curated() -> None:
+    for relative in (
+        "docs/README.md",
+        "docs/quickstart.md",
+        "docs/environment.md",
+        "docs/architecture.md",
+        "docs/data_and_geometry.md",
+        "docs/evaluation.md",
+        "docs/third_party.md",
+        "docs/archive/README.md",
+    ):
+        assert (ROOT / relative).is_file()
+    for relative in ("START_HERE.md", "prompts/phase0/00_start.md", "docs/project_design_v1.md", "docs/14_portfolio_walkthrough.md", "docs/16_phase7_release_readiness.md"):
+        assert not (ROOT / relative).exists(), relative
+
+
 def test_phase6_summary_is_generated_and_current() -> None:
     result = subprocess.run(
         [sys.executable, "tools/generate_phase6_summary.py", "--check"],
@@ -33,7 +49,7 @@ def test_phase6_summary_is_generated_and_current() -> None:
 
 
 def test_user_facing_markdown_links_resolve() -> None:
-    paths = [ROOT / "README.md", ROOT / "START_HERE.md", *sorted((ROOT / "docs").rglob("*.md")), *sorted((ROOT / "reports").glob("*.md"))]
+    paths = [ROOT / "README.md", *sorted((ROOT / "docs").glob("*.md")), ROOT / "docs/archive/README.md", *sorted((ROOT / "docs/releases").glob("*.md")), *sorted((ROOT / "reports").glob("*.md"))]
     pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)\)")
     for path in paths:
         for target in pattern.findall(path.read_text(encoding="utf-8")):
@@ -73,7 +89,7 @@ def test_repository_does_not_track_runtime_assets_or_modify_openpcdet() -> None:
 
 
 def test_new_user_facing_docs_have_no_machine_absolute_paths() -> None:
-    paths = [ROOT / "README.md", ROOT / "START_HERE.md", ROOT / "docs/13_system_architecture.md", ROOT / "docs/14_portfolio_walkthrough.md", ROOT / "docs/15_third_party_and_assets.md", ROOT / "docs/16_phase7_release_readiness.md", ROOT / "docs/releases/v0.7.0-rc1.md", ROOT / "reports/phase6_summary.md", ROOT / ".github/workflows/cpu-tests.yml"]
+    paths = [ROOT / "README.md", *sorted((ROOT / "docs").glob("*.md")), ROOT / "docs/archive/README.md", *sorted((ROOT / "docs/releases").glob("*.md")), ROOT / "reports/phase6_summary.md"]
     forbidden = ("/home/chaos", "/workspace/", "C:\\Users\\")
     for path in paths:
         text = path.read_text(encoding="utf-8")

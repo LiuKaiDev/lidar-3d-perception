@@ -47,75 +47,63 @@ def render_summary(e3: dict, e4: dict, benchmark: dict) -> str:
     centerpoint_runtime = detector_runtime["centerpoint_e2e_ms"]
     voxelnext_runtime = detector_runtime["voxelnext_e2e_ms"]
     e3_runtime = detector_runtime["estimated_total_ms"]
-    return f"""# Phase 6 Results Summary
+    return f"""# Phase 6 结果摘要
 
-This report is generated from the committed E3/E4 machine-readable artifacts;
-run `PYTHONPATH=. .venv/bin/python tools/generate_phase6_summary.py --check`
-to detect drift. It describes the **nuScenes v1.0-mini exploratory experiment**
-only: `mini_val` has {sample_count} samples from two scenes, was previously exposed, and
-these results do not represent full-nuScenes generalization or a SOTA claim.
+本报告由已提交的 E3/E4 machine-readable artifacts 生成。运行
+`PYTHONPATH=. .venv/bin/python tools/generate_phase6_summary.py --check` 可检查漂移。
+结果仅属于 **nuScenes v1.0-mini exploratory experiment**：`mini_val` 有
+{sample_count} 个 sample、来自两个 scene，且此前已暴露；不代表 full nuScenes
+benchmark、full nuScenes 泛化或 SOTA claim。
 
-## Confirmatory mini-val results
+## mini_val 对比
 
-Custom metrics use class-aware one-to-one center matching at 2 m. Recall bins
-are defined by GT range or predicted point count as documented in the Phase 6
-protocol. Official columns are from the nuScenes detection evaluator.
+Custom 指标使用 2 m 阈值的 class-aware one-to-one center matching。距离
+recall 按 GT 中心距离分组；密度 recall 按 GT 框内当前 keyframe LiDAR 点数
+分组。E2 的推理特征才是预测框内当前帧点数，不能与 GT 评估分组混淆。
+官方列来自 nuScenes detection evaluator。
 
-| Variant | 50m+ recall | 0-5 points recall | Overall recall | Precision | FP | mAP | NDS | Runtime |
+| 方法 | 50m+ recall | 0–5 点 recall | overall recall | precision | FP | mAP | NDS | runtime |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 {chr(10).join(rows)}
 
-E3 is the frozen sequential late-fusion ablation. It raises long-range and
-sparse recall relative to either detector, but its false-positive count and
-lower precision are material costs. Naive Union is retained only as a
-high-recall, high-FP comparison.
+E3 是冻结的顺序 late-fusion directional ablation。它提高远距离和稀疏目标
+recall，但 FP 增加、precision 降低；Naive Union 仅作高 recall/high-FP 对照。
 
-## Runtime semantics
+## Runtime 语义
 
-- CenterPoint and VoxelNeXt single-detector reference values are historical
-  Phase 5 detector E2E measurements: {centerpoint_runtime:.2f} ms/sample and
-  {voxelnext_runtime:.2f} ms/sample,
-  respectively. They include preprocessing, transfer, inference, and schema
-  conversion under the Phase 5 scope.
-- E3's **{e3_runtime:.2f} ms/sample** is an *estimated* sequential total from
-  those two detector references plus measured cached-prediction CPU fusion.
-  It is not a newly measured end-to-end detector latency.
-- Phase 7A VoxelNeXt demo timings (about 785 s cold CLI wall time and 41.4 s
-  warm CLI wall time) include process/model startup and asset I/O. They must
-  not be mixed with detector E2E benchmark columns.
-- E4 repeat validation status is **{e4['status']}** for both custom and official
-  metrics; it repeats frozen cached-prediction evaluation and does not retune.
+- CenterPoint 和 VoxelNeXt 是历史 Phase 5 detector E2E 测量：分别为
+  {centerpoint_runtime:.2f} ms/sample 和 {voxelnext_runtime:.2f} ms/sample，
+  包含预处理、传输、推理和 schema 转换。
+- E3 的 **{e3_runtime:.2f} ms/sample** 是上述两项加缓存预测 CPU fusion 的
+  顺序总耗时估算，不是重新测量的 detector E2E latency。
+- VoxelNeXt demo 的约 785 s cold、41.4 s warm 是包含进程/模型启动
+  和资产 I/O 的 CLI wall time，不能与 detector E2E 列混用。
+- E4 repeat validation 状态为 **{e4['status']}**；它重复冻结 cache 评估，未重新调参。
 
-## Recommendation
+## 推荐
 
-Use **VoxelNeXt** as the default model because it has the strongest official
-mini-val mAP/NDS and the best precision among the compared variants. Keep
-**CenterPoint** as the baseline, **E3** as a directional complementarity
-ablation, and **Naive Union** only as a diagnostic control.
+默认使用 **VoxelNeXt**；CenterPoint 作为 baseline，E3 作为 directional
+complementarity ablation，Naive Union 仅作诊断对照。
 
-## Source artifacts and figures
+## 数据来源与图表
 
 - [`experiments/e3_late_fusion/metrics.json`](../experiments/e3_late_fusion/metrics.json)
 - [`experiments/e4_repeat_validation/metrics.json`](../experiments/e4_repeat_validation/metrics.json)
 - [`experiments/e3_late_fusion/benchmark.json`](../experiments/e3_late_fusion/benchmark.json)
 
-Distance recall shows where complementarity is concentrated, including the
-small 50m+ E3 gain over VoxelNeXt.
+距离 recall 显示互补性主要集中在哪些范围，包括 E3 相对 VoxelNeXt 的小幅 50m+ 收益。
 
 ![Recall by distance](../experiments/e3_late_fusion/figures/recall_by_distance.png)
 
-Density recall exposes the sparse 0-5-point slice rather than hiding it inside
-the overall score.
+密度 recall 展示 0–5 点稀疏切片，避免它被 overall score 掩盖。
 
 ![Recall by point density](../experiments/e3_late_fusion/figures/recall_by_density.png)
 
-Official metrics show why VoxelNeXt remains the default despite E3's custom
-recall gains.
+官方 mAP/NDS 说明即使 E3 custom recall 增长，VoxelNeXt 仍是默认模型。
 
 ![Official mAP and NDS](../experiments/e3_late_fusion/figures/official_metrics.png)
 
-Complementarity separates shared detections from model-only recoveries and
-provides the rationale for retaining E3 as an ablation.
+互补性图区分共享检测和模型独有恢复结果，说明保留 E3 ablation 的原因。
 
 ![Detector complementarity](../experiments/e3_late_fusion/figures/complementarity.png)
 """

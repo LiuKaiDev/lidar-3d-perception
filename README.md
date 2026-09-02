@@ -1,50 +1,21 @@
-# LiDAR 3D Perception
+# LiDAR 三维感知
 
-An engineering and research workspace for reproducible LiDAR 3D detection on
-nuScenes and KITTI. It owns dataset adapters, geometry, prediction schemas,
-cache provenance, evaluation, fusion, validation CLIs, reports, and tests;
-OpenPCDet remains the pinned third-party detector backend.
+这是一个面向 KITTI 和 nuScenes 的 LiDAR 三维目标检测、评估与实验分析项目。项目负责数据适配、几何变换、`Box3D`/`PredictionBatch` schema、预测缓存 provenance、matching、评估、融合、验证工具和报告；CenterPoint 与 VoxelNeXt 网络来自固定 revision 的 OpenPCDet 预训练检测器。
 
-## Current state
+默认模型是 **VoxelNeXt**，因为冻结的 `nuScenes v1.0-mini / mini_val` 对比中它具有最高的官方 mAP/NDS 和 precision。CenterPoint 用作 baseline；E3 是可选的预测结果 late-fusion 实验，能够改善远距离和稀疏目标的 custom recall，但会增加 FP，且官方 mAP/NDS 低于 VoxelNeXt，因此不是默认模型。
 
-Phase 6 is closed and Phase 7A reproducibility entrypoints are complete.
-The Phase 7B package is complete locally for GitHub review; its workflow still
-needs a real remote run before CI can be called passing. **VoxelNeXt is the
-default detector** because it has the strongest official mini-val mAP/NDS and
-precision in the frozen comparison. CenterPoint is the baseline. E3 is retained
-as a directional, sequential late-fusion ablation: it recovers complementary
-far/sparse objects, at the cost of false positives and lower precision, so it is
-not the default.
+## 功能范围
 
-All Phase 6 numbers are from a previously exposed `nuScenes v1.0-mini`
-exploratory protocol. `mini_val` contains two scenes and is not evidence of
-full-nuScenes generalization or a SOTA claim.
+- KITTI、nuScenes 数据适配和多 sweep 坐标变换。
+- 统一的 `Box3D`、`PredictionBatch` 和 cache provenance。
+- 基于中心距离的 class-aware one-to-one matching。
+- 按距离、GT 点密度的诊断评估，官方 nuScenes 指标转换和 bootstrap。
+- 冻结 E3 prediction-only fusion、环境/资产 validator 和单样本 demo。
+- 可由 JSON artifacts 确定性生成的结果摘要。
 
-## Capabilities
+## 快速开始：CPU 检查
 
-- KITTI and nuScenes adapters with explicit coordinate-frame transforms.
-- `Box3D` and `PredictionBatch` schemas with velocity and provenance fields.
-- Distance-aware, point-density-aware, matching, bootstrap, and official
-  nuScenes evaluation.
-- Deterministic prediction-cache validation and frozen E3 prediction-only
-  fusion.
-- Read-only environment/asset validators and a single-sample demo CLI.
-- Machine-readable experiment manifests and report generation.
-
-## Architecture
-
-See [`docs/13_system_architecture.md`](docs/13_system_architecture.md) for the
-component map and data flow. The short version is: dataset adapter -> detector
-backend -> project schema -> optional cache/fusion -> evaluation/reporting.
-Ground truth is loaded only by evaluation and analysis; detector inference does
-not receive GT.
-
-## Quick start
-
-Use Python 3.12 and a virtual environment. This lightweight path validates the
-project, opens CLI help, runs the CPU suite, and checks the generated report. It
-does not initialize OpenPCDet or require a dataset, checkpoint, cache, GPU, or
-checked-out submodule.
+这条路径不需要 GPU、nuScenes、checkpoint、PredictionCache 或 OpenPCDet checkout。使用 Python 3.12 安装轻量依赖和 CPU Torch：
 
 ```bash
 python3.12 -m venv .venv
@@ -57,89 +28,66 @@ make cpu-tests
 PYTHONPATH=. .venv/bin/python tools/generate_phase6_summary.py --check
 ```
 
-On Debian/Ubuntu, install the distribution's Python 3.12 venv package first if
-`python3.12 -m venv` reports that `ensurepip` is unavailable.
+如果 `python3.12 -m venv` 报告 `ensurepip` 不可用，请先安装系统提供的 Python 3.12 venv 包。CPU suite 不会初始化 detector 或下载外部资产。
 
-Real detector inference is a separate GPU path. It requires the pinned
-OpenPCDet submodule, the frozen CUDA Torch/spconv environment, nuScenes assets,
-and a locally verified checkpoint. Follow
-[`docs/environment.lock.md`](docs/environment.lock.md), then run:
+## GPU 单样本推理
+
+真实 detector 推理还需要 CUDA 版 Torch、spconv、nuScenes 数据、匹配 SHA-256 的 checkpoint，以及已初始化并编译的 OpenPCDet：
 
 ```bash
+git submodule update --init third_party/OpenPCDet
 PYTHONPATH=. .venv/bin/python tools/validate_environment.py --profile gpu
 PYTHONPATH=. .venv/bin/python tools/validate_assets.py --detector voxelnext
 PYTHONPATH=. .venv/bin/python tools/demo_nuscenes.py --sample-token <token>
 ```
 
-Asset validation is read-only. The demo writes one JSON `PredictionBatch`
-payload under `outputs/demo/` (ignored by Git).
+数据根目录可由 `NUSCENES_ROOT` 或 `--dataset-root <path>` 指定；单模型 checkpoint 可由 `--checkpoint <path>` 覆盖。默认输出为 `outputs/demo/<detector>/<sample-token>.json`，该目录不会进入 Git。
 
-For the full entrypoint contract, including environment profiles, asset
-precedence, cache checks, and timing scopes, see
-[`docs/12_phase7_reproducibility_entrypoints.md`](docs/12_phase7_reproducibility_entrypoints.md).
-
-Select modes explicitly:
+显式选择 CenterPoint 或 E3：
 
 ```bash
 PYTHONPATH=. .venv/bin/python tools/demo_nuscenes.py --detector centerpoint --sample-token <token>
 PYTHONPATH=. .venv/bin/python tools/demo_nuscenes.py --detector e3 --sample-token <token>
 ```
 
-Set `NUSCENES_ROOT` or pass `--dataset-root <path>` when the dataset is not at
-the configured default. `--checkpoint <path>` is available for single-detector
-modes; E3 always reads its frozen detector and fusion configs.
+E3 按冻结配置顺序运行两个 detector，并直接融合内存中的 `PredictionBatch`；它不读取 GT，也不要求离线 cache。完整安装和兼容性说明见 [docs/quickstart.md](docs/quickstart.md) 与 [docs/environment.md](docs/environment.md)。
 
-## Phase 6 results
+## 实验结果
 
-The generated summary is [`reports/phase6_summary.md`](reports/phase6_summary.md).
-Its numbers come directly from the committed E3/E4 JSON artifacts:
+下表来自已提交的 E3/E4 JSON artifacts。结果属于 **nuScenes v1.0-mini exploratory experiment**；`mini_val` 只有两个 scene，且此前已暴露，不代表 full nuScenes benchmark、full nuScenes 泛化或 SOTA claim。
+
+| 方法 | 50m+ recall | 0–5 点 recall | precision | FP | mAP | NDS |
+|---|---:|---:|---:|---:|---:|---:|
+| CenterPoint | 14.00% | 63.30% | 21.76% | 12,841 | 0.4371 | 0.4919 |
+| VoxelNeXt | 23.40% | 68.71% | 27.95% | 9,591 | 0.5209 | 0.5442 |
+| E3 | 24.60% | 71.17% | 16.13% | 19,678 | 0.4996 | 0.5210 |
+
+E3 的 recall 收益伴随 FP 增加和官方指标代价，所以保留为 directional ablation。完整四方法表、runtime 计时范围、图表和生成命令见 [reports/phase6_summary.md](reports/phase6_summary.md)。
+
+## 项目结构与文档
+
+- [docs/README.md](docs/README.md)：按功能组织的文档导航。
+- [docs/architecture.md](docs/architecture.md)：模块职责、数据流、cache 和 fusion 边界。
+- [docs/data_and_geometry.md](docs/data_and_geometry.md)：坐标系、box、点云和 sweep。
+- [docs/evaluation.md](docs/evaluation.md)：指标定义、评估和 runtime 语义。
+- [docs/third_party.md](docs/third_party.md)：第三方代码、模型、数据和许可证边界。
+- [experiments/README.md](experiments/README.md)：E0–E4 原始实验索引；JSON、配置和 figures 保持不变。
+- [docs/archive/README.md](docs/archive/README.md)：保留的历史协议和测量记录索引。
+
+## 测试
+
+无资产 CPU 检查使用 `make cpu-tests`；具备历史真实数据 fixture 时可运行完整套件：
 
 ```bash
-PYTHONPATH=. .venv/bin/python tools/generate_phase6_summary.py --check
+PYTHONPATH=. .venv/bin/python -m pytest -q
 ```
 
-The report links the selected distance, density, official-metric, and
-complementarity figures. It distinguishes historical Phase 5 detector E2E
-measurements from E3's estimated sequential total and from Phase 7A CLI wall
-time.
+GitHub Actions 在 Python 3.12 上运行同一组 focused CPU tests、环境检查和 summary 校验，不需要 CUDA 或 detector inference。
 
-Interpret custom recall as a diagnostic slice under the frozen 2 m matcher, not
-as an official nuScenes metric. mAP/NDS remain the primary model-selection
-evidence; FP and precision explain why E3's recall gain does not make it the
-default.
+## 限制与后续工作
 
-## Tests and CI
+Phase 6 只覆盖此前暴露的 `nuScenes v1.0-mini` 两个 `mini_val` scene，不能代表 full nuScenes。Phase 5 detector E2E、E3 顺序总耗时估算和 demo cold/warm CLI wall time 的计时范围不同，不能直接比较。未随仓库分发 dataset、checkpoint、cache 或 runtime outputs。新 split/full nuScenes 验证、tracking 和 PyPI 发布属于后续工作。
 
-Run the asset-free CPU suite with `make cpu-tests`. Run the complete local suite
-with `PYTHONPATH=. .venv/bin/python -m pytest -q` only when its real-data test
-fixtures are available.
-GitHub Actions runs a focused CPU target on Python 3.12; it never initializes a
-detector, requires CUDA, downloads nuScenes/checkpoints, or runs inference. The
-workflow also runs environment validation, report `--check`, YAML/JSON parsing,
-and repository boundary checks. A badge is omitted from this release-candidate
-package; the exact commit result remains available in GitHub Actions.
+## 许可证与第三方来源
 
-## Data, models, and third-party code
-
-Datasets, checkpoints, prediction caches, and runtime outputs are external or
-ignored assets and never enter Git. Original code and documentation in this
-repository are licensed under Apache-2.0; see [`LICENSE`](LICENSE). OpenPCDet
-is a submodule at revision `233f849829b6ac19afb8af8837a0246890908755`; its own
-Apache-2.0 license and copyright notices remain authoritative. nuScenes, KITTI,
-pretrained checkpoints, and other third-party assets follow their respective
-source terms and are not relicensed by this project. Checkpoint URLs and
-SHA-256 identities are recorded in the detector configs and
-[`docs/15_third_party_and_assets.md`](docs/15_third_party_and_assets.md).
-
-## Limitations and roadmap
-
-The mini exploratory protocol is small, previously exposed, and not a full
-benchmark. Runtime values have explicit scopes and should not be compared across
-scopes. Future work includes repeating the protocol on an unseen/full split and
-tracking; these are outside this release candidate.
-
-For an interview-style explanation, see
-[`docs/14_portfolio_walkthrough.md`](docs/14_portfolio_walkthrough.md).
-Release preparation is tracked in
-[`docs/16_phase7_release_readiness.md`](docs/16_phase7_release_readiness.md),
-with the [`v0.7.0-rc1` release notes](docs/releases/v0.7.0-rc1.md).
+本项目原创代码和文档采用 [Apache License 2.0](LICENSE)。OpenPCDet 保留其自身的 Apache-2.0 LICENSE 和版权声明；nuScenes、KITTI、预训练 checkpoint、spconv、Torch/CUDA 及其他第三方资产遵循各自来源条款，不由本项目许可证重新授权。OpenPCDet revision、checkpoint URL 和 SHA-256 见 [docs/third_party.md](docs/third_party.md) 与 `configs/detectors/`。
