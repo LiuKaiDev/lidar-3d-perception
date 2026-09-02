@@ -41,9 +41,10 @@ not receive GT.
 
 ## Quick start
 
-Use Python 3.12 and a virtual environment. The CPU checks need only the small
-schema/algorithm dependencies; GPU inference additionally needs CUDA Torch,
-spconv, nuScenes assets, and the pinned OpenPCDet submodule.
+Use Python 3.12 and a virtual environment. This lightweight path validates the
+project, opens CLI help, runs the CPU suite, and checks the generated report. It
+does not initialize OpenPCDet or require a dataset, checkpoint, cache, GPU, or
+checked-out submodule.
 
 ```bash
 python3.12 -m venv .venv
@@ -51,15 +52,27 @@ python3.12 -m venv .venv
 .venv/bin/python -m pip install torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
 PYTHONPATH=. .venv/bin/python tools/validate_environment.py --profile cpu
+PYTHONPATH=. .venv/bin/python tools/demo_nuscenes.py --help
+make cpu-tests
+PYTHONPATH=. .venv/bin/python tools/generate_phase6_summary.py --check
+```
+
+On Debian/Ubuntu, install the distribution's Python 3.12 venv package first if
+`python3.12 -m venv` reports that `ensurepip` is unavailable.
+
+Real detector inference is a separate GPU path. It requires the pinned
+OpenPCDet submodule, the frozen CUDA Torch/spconv environment, nuScenes assets,
+and a locally verified checkpoint. Follow
+[`docs/environment.lock.md`](docs/environment.lock.md), then run:
+
+```bash
 PYTHONPATH=. .venv/bin/python tools/validate_environment.py --profile gpu
 PYTHONPATH=. .venv/bin/python tools/validate_assets.py --detector voxelnext
 PYTHONPATH=. .venv/bin/python tools/demo_nuscenes.py --sample-token <token>
 ```
 
-The first command works without a dataset, checkpoint, cache, or GPU. Asset
-validation is read-only. The demo needs a local nuScenes mini root and the
-selected checkpoint; it writes one JSON `PredictionBatch` payload under
-`outputs/demo/` (ignored by Git).
+Asset validation is read-only. The demo writes one JSON `PredictionBatch`
+payload under `outputs/demo/` (ignored by Git).
 
 For the full entrypoint contract, including environment profiles, asset
 precedence, cache checks, and timing scopes, see
@@ -97,7 +110,9 @@ default.
 
 ## Tests and CI
 
-Run the complete local suite with `PYTHONPATH=. .venv/bin/python -m pytest -q`.
+Run the asset-free CPU suite with `make cpu-tests`. Run the complete local suite
+with `PYTHONPATH=. .venv/bin/python -m pytest -q` only when its real-data test
+fixtures are available.
 GitHub Actions runs a focused CPU target on Python 3.12; it never initializes a
 detector, requires CUDA, downloads nuScenes/checkpoints, or runs inference. The
 workflow also runs environment validation, report `--check`, YAML/JSON parsing,

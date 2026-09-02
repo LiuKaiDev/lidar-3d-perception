@@ -3,8 +3,9 @@
 ## Dependencies and ownership
 
 - **OpenPCDet** is a Git submodule pinned to revision
-  `233f849829b6ac19afb8af8837a0246890908755`. Its checked-in `LICENSE` is
-  Apache License 2.0; the submodule supplies CenterPoint, VoxelNeXt, model
+  `233f849829b6ac19afb8af8837a0246890908755`. Its checked-in
+  [LICENSE](https://github.com/open-mmlab/OpenPCDet/blob/233f849829b6ac19afb8af8837a0246890908755/LICENSE)
+  is Apache License 2.0; the submodule supplies CenterPoint, VoxelNeXt, model
   configs, dataset hooks, and CUDA operators. The project does not modify it.
 - **PyTorch/Torch CUDA**, **spconv**, and the **nuScenes devkit** are runtime
   dependencies. Exact versions observed in the frozen Phase 6 environment are
@@ -16,7 +17,8 @@
 ## Model assets
 
 The checkpoint sources were verified against the model-zoo table in the pinned
-[`OpenPCDet README`](../third_party/OpenPCDet/README.md). The detector YAML
+[OpenPCDet README](https://github.com/open-mmlab/OpenPCDet/blob/233f849829b6ac19afb8af8837a0246890908755/README.md).
+The detector YAML
 files preserve those source URLs and the locally validated SHA-256 identities:
 
 | Model | Config | Checkpoint SHA-256 |

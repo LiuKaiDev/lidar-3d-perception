@@ -23,7 +23,7 @@ def test_phase6_summary_is_generated_and_current() -> None:
 
 
 def test_user_facing_markdown_links_resolve() -> None:
-    paths = [ROOT / "README.md", ROOT / "START_HERE.md", *sorted((ROOT / "docs").glob("*.md")), *sorted((ROOT / "reports").glob("*.md"))]
+    paths = [ROOT / "README.md", ROOT / "START_HERE.md", *sorted((ROOT / "docs").rglob("*.md")), *sorted((ROOT / "reports").glob("*.md"))]
     pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)\)")
     for path in paths:
         for target in pattern.findall(path.read_text(encoding="utf-8")):
@@ -63,7 +63,7 @@ def test_repository_does_not_track_runtime_assets_or_modify_openpcdet() -> None:
 
 
 def test_new_user_facing_docs_have_no_machine_absolute_paths() -> None:
-    paths = [ROOT / "README.md", ROOT / "START_HERE.md", ROOT / "docs/13_system_architecture.md", ROOT / "docs/14_portfolio_walkthrough.md", ROOT / "docs/15_third_party_and_assets.md", ROOT / "reports/phase6_summary.md", ROOT / ".github/workflows/cpu-tests.yml"]
+    paths = [ROOT / "README.md", ROOT / "START_HERE.md", ROOT / "docs/13_system_architecture.md", ROOT / "docs/14_portfolio_walkthrough.md", ROOT / "docs/15_third_party_and_assets.md", ROOT / "docs/16_phase7_release_readiness.md", ROOT / "docs/releases/v0.7.0-rc1.md", ROOT / "reports/phase6_summary.md", ROOT / ".github/workflows/cpu-tests.yml"]
     forbidden = ("/home/chaos", "/workspace/", "C:\\Users\\")
     for path in paths:
         text = path.read_text(encoding="utf-8")
